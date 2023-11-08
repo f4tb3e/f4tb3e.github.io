@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="f4tb3e">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2023/10/05/基础备忘/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="一些区块链中基础的基础的基础的基础。。。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="区块链安全基础备忘">
+<meta property="og:url" content="http://example.com/2023/10/05/%E5%9F%BA%E7%A1%80%E5%A4%87%E5%BF%98/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一些区块链中基础的基础的基础的基础。。。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-10-05T04:34:10.000Z">
+<meta property="article:modified_time" content="2023-11-07T05:03:20.492Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311061857527.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311061857527.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311061857527.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            区块链安全基础备忘 -
+        
+        f4tb3e&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Here is f4tb3e!","subtitle":{"text":["My dad has a GT-R!","Dude, is that a Supra?","夏树，叔叔要加速咯"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":80,"backing_speed":60,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"About":{"icon":"fa-regular fa-user","path":"/about"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2023/11/6 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311061840946.gif">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                f4tb3e&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        HOME
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        ARCHIVES
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/categories"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-folder"></i>
+                                        
+                                        CATEGORIES
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/about"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        ABOUT
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                HOME
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                ARCHIVES
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/categories"  >
+                             
+                                
+                                    <i class="fa-regular fa-folder"></i>
+                                
+                                CATEGORIES
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/about"  >
+                             
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                ABOUT
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">区块链安全基础备忘</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header flex flex-row gap-2 items-center">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="https://cdn.jsdelivr.net/gh/F4tBe3/AutoUploadPics/img/202305191441958.png">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">f4tb3e</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv1</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-10-05 12:34:10</span>
+        <span class="mobile">2023-10-05 12:34:10</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-11-07 13:03:20</span>
+            <span class="mobile">2023-11-07 13:03:20</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E5%8C%BA%E5%9D%97%E9%93%BE/">区块链</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <h2 id="基础名词"><a href="#基础名词" class="headerlink" title="基础名词"></a>基础名词</h2><h3 id="钱包-Wallet"><a href="#钱包-Wallet" class="headerlink" title="钱包 Wallet"></a>钱包 Wallet</h3><p>是一个管理私钥的工具，允许通过其检查、存储、交易持有的数字货币。它是进入区块链世界的基础设施和重要入口。</p>
+<ul>
+<li><strong>冷钱包 Cold Wallet：</strong>离线钱包，通过生成数字货币的地址和私钥再保存实现存储。</li>
+<li><strong>热钱包 Hot Wallet：</strong>在线钱包，使用较方便。</li>
+</ul>
+<h3 id="公链"><a href="#公链" class="headerlink" title="公链"></a>公链</h3><p>公有链（Public Blockchain）简称公链，是指任何人都可随时进入读取、任何人都能发送交易且能获得有效确认的共识区块链</p>
+<h3 id="交易所-Exchange"><a href="#交易所-Exchange" class="headerlink" title="交易所 Exchange"></a>交易所 Exchange</h3><p>数字货币买卖交易的平台。</p>
+<ul>
+<li><p><strong>去中心化交易所：</strong></p>
+<p>交易行为直接发生在区块链上，数字货币会直接发挥使用者的钱包，或是保存在区块链上的智能合约。目前市面上去中心化交易所有WhaleEx、Bancor、dYdX等。</p>
+</li>
+<li><p><strong>中心化交易所：</strong></p>
+<p>目前热门交易所大多采用中心化技术，使用者在平台注册，并经过一连串的身份验证程序（KYC）后，就可以在平台交易数字货币。在使用其交易数字货币时，其货币交换不见得会发生在区块链上，可能仅是修改交易所数据库内的资产数字，交易所只需要在用户提款时准备充足的数字货币供汇出即可。当前的主流交易大部分是在中心化交易所内完成的，目前市面上的中心化交易所有币安、火币、OKEx等。</p>
+</li>
+</ul>
+<h3 id="共识-Consensus"><a href="#共识-Consensus" class="headerlink" title="共识 Consensus"></a>共识 Consensus</h3><p>主要解决分布式系统中，多个节点之间对某个状态达成一致性的问题。</p>
+<ul>
+<li><p><strong>工作量证明 PoW（Proof of Work）：</strong></p>
+<p>是历史上第一个成功的去中心化区块链共识算法，被比特币、以太坊、莱特币等主流公链广泛使用。</p>
+<p>其要求节点参与者执行计算密集型的任务，但是对于其他网络参与者易于验证。在比特币的例子中，矿工竞相向由整个网络维护的区块链账本中添加所收集到的交易，即区块。为了做到这一点，矿工必须第一个准确计算出“nonce”，这是一个添加在字符串末尾的数字，用来创建一个满足开头特定个数为零的哈希值。不过存在采矿的大量电力消耗和低交易吞吐量等缺点。</p>
+</li>
+<li><p><strong>权益证明 PoS（Proof of Stake）：</strong></p>
+<p>权力证明机制，一种主流的区块链共识算法，目的是为了让区块链里的分布式节点达成共识，它往往和工作量证明机制（PoW）一起出现。</p>
+<p>它通过持币人的统一来达成共识，目的是确定出新区块，这过程相对于PoW，不需要硬件和电力，效率更高。PoS 共识中引入了 Stake 的概念，持币人将代币进行 Staking，要求所有的参与者抵押一部分他们所拥有的 Token 来验证交易，然后获得出块的机会，PoS 共识中会通过选举算法，按照持币量比例以及 Token 抵押时长，或者是一些其他的方式，选出打包区块的矿工。矿工在指定高度完成打包交易，生成新区块，并广播区块，广播的区块经过 PoS 共识中另外一道”门槛”，验证人验证交易，通过验证后，区块得到确认。</p>
+<p>这样一轮 PoS 的共识过程就进行完成了。权益证明通过长期绑定验证者的利益和整个网络的利益来阻止不良行为。锁定代币后，如果验证者存在欺诈性交易，那么他们所抵押的 Token 也会被削减。</p>
+</li>
+<li><p><strong>委托权益证明 DPoS（Delegate Proof of Stake）：</strong>在委托权益证明中，让每一个持币者都可以进行投票，由此产生一定数量的代表，他们彼此之间的权利是完全相等的。</p>
+</li>
+</ul>
+<h3 id="多签-Multi-sig"><a href="#多签-Multi-sig" class="headerlink" title="多签 Multi-sig"></a>多签 Multi-sig</h3><p>指的是需要多个签名才能执行的操作（这些签名是不同私钥生成的）。</p>
+<h2 id="一些公链攻击方式"><a href="#一些公链攻击方式" class="headerlink" title="一些公链攻击方式"></a>一些公链攻击方式</h2><h3 id="恶意挖矿攻击-Cryptojacking-Attack"><a href="#恶意挖矿攻击-Cryptojacking-Attack" class="headerlink" title="恶意挖矿攻击 Cryptojacking Attack"></a>恶意挖矿攻击 Cryptojacking Attack</h3><p>指未授权下劫持用户设备挖掘加密货币。</p>
+<h3 id="无利益攻击-Nothin-at-Stake-Attack"><a href="#无利益攻击-Nothin-at-Stake-Attack" class="headerlink" title="无利益攻击 Nothin at Stake Attack"></a>无利益攻击 Nothin at Stake Attack</h3><p>可以简单概括为“作恶无成本，好处无限多”。当 PoS 共识系统出现分叉(Fork)时，出块节点可以在“不受任何损失”的前提下，同时在两个分叉上出块；无论哪一个分叉后面被公认为主链，该节点都可以获得“所有收益”且不会有任何成本损失。这就很容易给某些节点一种动力去产生新的分叉，支持或发起不合法交易，其他逐利的出块节点会同时在多条链(窗口)上排队出块支持新的分叉。随着时间的推移，分叉越来越多，非法交易，作恶猖狂。区块链将不再是唯一链，所有出块节点没有办法达成共识。</p>
+<p>为了预防这样的情况发生，许多类 PoS 共识机制对此的解决方法是引入惩罚机制，对作恶的节点进行经济惩罚(Slashing)，以建立更加稳定的网络。DPoS 实际上也是无利益攻击的解决方案之一，由上文我们可知 DPoS 这个机制由持币人选出出块节点来运营网络，出块节点会将一部分奖励分给投票者。</p>
+<h3 id="双花攻击-Double-Spend-Attack"><a href="#双花攻击-Double-Spend-Attack" class="headerlink" title="双花攻击 Double Spend Attack"></a>双花攻击 Double Spend Attack</h3><p>即一笔钱花了两次，双重支付，利用货币的数字特性两次或多次使用“同一笔钱”完成支付。双花不会产生新的 Token，但能把自己花出去的钱重新拿回来。简单说就是，攻击者将一笔 Token 转到另外一个地址，通常是转到交易所进行套现，然后再利用一些攻击手法对转账交易进行回滚。</p>
+<p>目前有常见的几种手法能够引发双花攻击：</p>
+<h4 id="01-Race-Attack"><a href="#01-Race-Attack" class="headerlink" title="01 Race Attack"></a>01 Race Attack</h4><p>这种攻击主要通过控制矿工费来实现双花。</p>
+<h4 id="02-Finney-Attack"><a href="#02-Finney-Attack" class="headerlink" title="02 Finney Attack"></a>02 Finney Attack</h4><p>攻击者主要通过控制区块的广播时间来实现双花，攻击对象针对的是接受0确认的商家。</p>
+<h4 id="03-Vector76-Attack"><a href="#03-Vector76-Attack" class="headerlink" title="03 Vector76 Attack"></a>03 Vector76 Attack</h4><p>又称“一次确认攻击”，也就是交易确认一次后仍然可以回滚，是 Finney Attack 和 Race Attack 的组合</p>
+<h4 id="04-51-Attack"><a href="#04-51-Attack" class="headerlink" title="04 51% Attack"></a>04 51% Attack</h4><p>攻击者占有超过全网50%的算力，在攻击者控制算力的这段时间，他可以创造一条高度大于原来链的新链。那么旧链中的交易会被回滚，攻击者可以使用同一笔 Token 发送一笔新的交易到新链上。</p>
+<h3 id="软分叉-Soft-fork"><a href="#软分叉-Soft-fork" class="headerlink" title="软分叉 Soft-fork"></a>软分叉 Soft-fork</h3><p>当新共识规则发布后，没有升级的旧节点并不会意识到代码已经发生改变，而继续生产不合法的区块，就会产生临时性分叉。</p>
+<h3 id="硬分叉-Hard-fork"><a href="#硬分叉-Hard-fork" class="headerlink" title="硬分叉 Hard-fork"></a>硬分叉 Hard-fork</h3><p>在新共识规则发布后，已经升级的节点无法验证未升级节点产生的区块，未升级节点也无法验证已经升级的节点产生新的区块，即新旧节点互不兼容，原有正常的一条链被分成了两条链。</p>
+<h3 id="异形攻击-Alien-Attack"><a href="#异形攻击-Alien-Attack" class="headerlink" title="异形攻击 Alien Attack"></a>异形攻击 Alien Attack</h3><p>又称地址池污染，是指诱使同类链的节点互相侵入的一种攻击手法，漏洞的主要原因是同类链系统在通信协议上没有对不同链的节点做识别。</p>
+<h3 id="钓鱼攻击-Phishing"><a href="#钓鱼攻击-Phishing" class="headerlink" title="钓鱼攻击 Phishing"></a>钓鱼攻击 Phishing</h3><p>社工，套取用户名、密码、私钥等私密信息。</p>
+<h3 id="木马攻击-Trojan-Horse-Attack"><a href="#木马攻击-Trojan-Horse-Attack" class="headerlink" title="木马攻击 Trojan Horse Attack"></a>木马攻击 Trojan Horse Attack</h3><p>木马病毒</p>
+<h3 id="供应链攻击-Supply-Chain-Attack"><a href="#供应链攻击-Supply-Chain-Attack" class="headerlink" title="供应链攻击 Supply Chain Attack"></a>供应链攻击 Supply Chain Attack</h3><p>由于现在的软件工程，各种包&#x2F;模块的依赖十分频繁、常见，而开发者们很难做到一一检查，默认都过于信任市面上流通的包管理器。</p>
+<h2 id="智能合约"><a href="#智能合约" class="headerlink" title="智能合约"></a>智能合约</h2><p>一种计算机协议，是以数字方式促进、验证或执行合同的谈判或履行。在区块链领域中，智能合约本质可以说是一段运行在区块链网络中的代码，它以计算机指令的方式实现了传统合约的自动化处理，完成用户所赋予的业务逻辑。</p>
+<h3 id="交易回滚攻击-Roll-Back-Attack"><a href="#交易回滚攻击-Roll-Back-Attack" class="headerlink" title="交易回滚攻击 Roll Back Attack"></a>交易回滚攻击 Roll Back Attack</h3><p>指的是能对交易的状态进行回滚，回滚指的是将已经发生的交易编程未发生的状态。即攻击者已经完成了支付动作，但是通过某些手段，让转账流程发生错误，从而回滚整个交易流程。</p>
+<h3 id="交易排挤攻击-Transaction-Congestion-Attack"><a href="#交易排挤攻击-Transaction-Congestion-Attack" class="headerlink" title="交易排挤攻击 Transaction Congestion Attack"></a>交易排挤攻击 Transaction Congestion Attack</h3><p>是针对 EOS 上的使用 defer 进行开奖的游戏合约的一种攻击手法，攻击者可以通过某些手段，在游戏合约的 defer 开奖交易前发送大量的 defer 交易，恶意侵占区块内的 CPU 资源，使得智能合约内本应在指定区块内执行的 defer 开奖交易因资源不足无法执行，只能去到下一个区块才执行。</p>
+<p>由于很多 EOS 上的游戏智能合约使用区块信息作为智能合约本身的随机数，同一个 defer 开奖交易在不同区块内的执行结果是不一样的。通过这样的方式，攻击者在获知无法中奖的时候，就通过发送大量的 defer 交易，强行让智能合约重新开奖，从而达到攻击目的。</p>
+<h3 id="随机数攻击-Random-Number-Attack"><a href="#随机数攻击-Random-Number-Attack" class="headerlink" title="随机数攻击 Random Number Attack"></a>随机数攻击 Random Number Attack</h3><p>就是针对智能合约的随机数生成算法进行攻击，预测只能合约的随机数。</p>
+<h3 id="状态攻击-hard-fail-Attack"><a href="#状态攻击-hard-fail-Attack" class="headerlink" title="状态攻击 hard_fail Attack"></a>状态攻击 hard_fail Attack</h3><p>hard-fail 是 EOS 上的一种交易状态（共有 executed、soft_fail、hard_fail、delayed、expired 这5种），发生在出现错误但是没有使用错误处理器（error handler）处理错误的情况下。通常在链上大部分人观察到的交易，都是 execute 或 delayed 的，而没有失败的交易。攻击者利用这个细节，针对链上游戏或交易所进行攻击，构造执行状态为 hard_fail 的交易，欺骗链上游戏或交易所进行假充值攻击，从而获利。</p>
+<h3 id="重放攻击-Replay-Attack"><a href="#重放攻击-Replay-Attack" class="headerlink" title="重放攻击 Replay Attack"></a>重放攻击 Replay Attack</h3><p>是针对区块链上的交易信息进行重放，一般来说，区块链会对交易进行各种验证，包括交易的时间戳、nonce、交易id 等。这种场景一般需要用户对某一条消息进行签名后上传给智能合约，然后再合约内部进行验签。但由于用户的签名信息是会上链的，也就是说每个人都能拿到用户的签名信息，如果被签名的消息不存在随着交易次数变化的变量，如时间戳、nonce 等，攻击者就可以拿着用户的签名，伪造用户发起交易，从而获利。</p>
+<h3 id="重入攻击-Reentrancy-Attack"><a href="#重入攻击-Reentrancy-Attack" class="headerlink" title="重入攻击 Reentrancy Attack"></a>重入攻击 Reentrancy Attack</h3><p>首次出现于以太坊，对应的真实攻击为 The DAO 攻击，此次攻击还导致了原来的以太坊分叉成以太经典（ETC）和现在的以太坊（ETH）。由于项目方采用的转账模型为先给用户发送转账才对用户的余额状态进行修改，导致恶意用户可以构造恶意合约，在接受转账的同时再次调用项目方的转账函数。导致用户的余额状态没有被改变，却能一直提取项目方资金。</p>
+<h3 id="假充值攻击-False-Top-up"><a href="#假充值攻击-False-Top-up" class="headerlink" title="假充值攻击 False Top-up"></a>假充值攻击 False Top-up</h3><p>分为针对只能合约的假充值攻击和对交易所的假充值攻击。在假充值攻击中，无论智能合约还是交易所本身，都没有收到真实的 Token，但是用户又得到了真实的充值记录。</p>
+<ul>
+<li><p><strong>智能合约假充值攻击：</strong></p>
+<p>针对智能合约的假充值主要是假币的假充值，这种攻击手法多发于 EOS 和波场上。</p>
+</li>
+<li><p><strong>交易所假充值攻击：</strong></p>
+<p>针对交易所的假充值攻击分为假币攻击和交易状态失败的假充值攻击。</p>
+</li>
+</ul>
+<h3 id="短地址攻击-Short-Address-Attack"><a href="#短地址攻击-Short-Address-Attack" class="headerlink" title="短地址攻击 Short Address Attack"></a>短地址攻击 Short Address Attack</h3><p>是针对以太坊上 ERC20 智能合约的一种攻击形式，利用的是 EVM 中的对于输入字节码的自动补全机制进行攻击。</p>
+<h3 id="假币攻击-Fake-Token-Attack"><a href="#假币攻击-Fake-Token-Attack" class="headerlink" title="假币攻击 Fake Token Attack"></a>假币攻击 Fake Token Attack</h3><p>收款方对一些 Token 进行收款的时候没有严格校验这些 Token 特有的标记，攻击就会发生。</p>
+<h3 id="整型溢出攻击-Interger-Overflow-Attack"><a href="#整型溢出攻击-Interger-Overflow-Attack" class="headerlink" title="整型溢出攻击 Interger Overflow Attack"></a>整型溢出攻击 Interger Overflow Attack</h3><p>略。</p>
+<h3 id="条件竞争攻击-Race-Condition"><a href="#条件竞争攻击-Race-Condition" class="headerlink" title="条件竞争攻击 Race Condition"></a>条件竞争攻击 Race Condition</h3><p>重入攻击（Reentrancy Attack）是条件竞争的一种。略。</p>
+<h3 id="越权访问攻击-Exceed-Authority-Access-Attack"><a href="#越权访问攻击-Exceed-Authority-Access-Attack" class="headerlink" title="越权访问攻击 Exceed Authority Access Attack"></a>越权访问攻击 Exceed Authority Access Attack</h3><p>略。</p>
+<h3 id="交易顺序依赖攻击-Transaction-Ordering-Attack"><a href="#交易顺序依赖攻击-Transaction-Ordering-Attack" class="headerlink" title="交易顺序依赖攻击 Transaction-Ordering Attack"></a>交易顺序依赖攻击 Transaction-Ordering Attack</h3><p>在区块链的世界当中，一笔交易内可能含有多个不同的交易，而这些交易执行的顺序会影响最终的交易的执行结果，由于在挖矿机制的区块链中，交易未被打包前都处于一种待打包的 pending 状态，如果能事先知道交易里面执行了哪些其他交易，恶意用户就能通过增加矿工费的形式，发起一笔交易，让交易中的其中一笔交易先行打包，扰乱交易顺序，造成非预期内的执行结果，达成攻击。</p>
+<h3 id="女巫攻击-Sybil-Attack"><a href="#女巫攻击-Sybil-Attack" class="headerlink" title="女巫攻击 Sybil Attack"></a>女巫攻击 Sybil Attack</h3><p>某个恶意节点可以伪装成多个节点，向被攻击节点发出链接请求，导致节点没办法接受其他节点的请求，造成节点拒绝服务攻击。</p>
+<h3 id="假错误通知攻击-Fake-Onerror-Notification-Attack"><a href="#假错误通知攻击-Fake-Onerror-Notification-Attack" class="headerlink" title="假错误通知攻击 Fake Onerror Notification Attack"></a>假错误通知攻击 Fake Onerror Notification Attack</h3><p>如果合约没有对 onerror 通知的来源合约是否是 eosio 进行检验的话，就会触发合约中对 onerror 的处理，从而导致被攻击合约资产遭受损失。</p>
+<h3 id="粉尘攻击-Dusting-Attack"><a href="#粉尘攻击-Dusting-Attack" class="headerlink" title="粉尘攻击 Dusting Attack"></a>粉尘攻击 Dusting Attack</h3><p>粉尘攻击最早发生于比特币网络中，粉尘指的是交易中的交易金额相对于正常交易而言十分地小，可以视作微不足道的粉尘。在采用 UTXO 模型作为账户资金系统的比特币中，通过给大量的账户发送这些粉尘金额，令交易粉尘化，然后再通过追踪这些粉尘交易，关联出该地址的其他关联地址，通过对这些关联地址进行行为分析，社工出一个地址背后的公司或个人，破坏比特币本身的匿名性。同时，大量的粉尘交易会造成区块的拥堵，使得手续费提升，进而产生大量待打包交易，降低系统本身的运行效率。</p>
+<h3 id="C2攻击-C2-Attack"><a href="#C2攻击-C2-Attack" class="headerlink" title="C2攻击 C2 Attack"></a>C2攻击 C2 Attack</h3><p>C2 全称 Command and Control，命令执行与控制。</p>
+<h3 id="洗币-Money-Laundering"><a href="#洗币-Money-Laundering" class="headerlink" title="洗币 Money Laundering"></a>洗币 Money Laundering</h3><p>略。</p>
+<h3 id="勒索-Ransom"><a href="#勒索-Ransom" class="headerlink" title="勒索 Ransom"></a>勒索 Ransom</h3><p>略。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 区块链安全基础备忘</li>
+        <li><strong>Author:</strong> f4tb3e</li>
+        <li><strong>Created at
+                :</strong> 2023-10-05 12:34:10</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2023-11-07 13:03:20
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://f4tb3e.github.io/2023/10/05/基础备忘/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+            This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a>.
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/10/07/Ethernaut-wp/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Ethernaut WP _持续更新中。。。</span>
+                                <span class="post-nav-item">Prev posts</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2022/04/28/Typora%E5%9B%BE%E7%89%87%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0GitHub%E5%9B%BE%E5%BA%8A/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Typora图片自动上传Github图床</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">区块链安全基础备忘</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E5%90%8D%E8%AF%8D"><span class="nav-text">基础名词</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%B1%E5%8C%85-Wallet"><span class="nav-text">钱包 Wallet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E9%93%BE"><span class="nav-text">公链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E6%89%80-Exchange"><span class="nav-text">交易所 Exchange</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E8%AF%86-Consensus"><span class="nav-text">共识 Consensus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%AD%BE-Multi-sig"><span class="nav-text">多签 Multi-sig</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E5%85%AC%E9%93%BE%E6%94%BB%E5%87%BB%E6%96%B9%E5%BC%8F"><span class="nav-text">一些公链攻击方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%B6%E6%84%8F%E6%8C%96%E7%9F%BF%E6%94%BB%E5%87%BB-Cryptojacking-Attack"><span class="nav-text">恶意挖矿攻击 Cryptojacking Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E5%88%A9%E7%9B%8A%E6%94%BB%E5%87%BB-Nothin-at-Stake-Attack"><span class="nav-text">无利益攻击 Nothin at Stake Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E8%8A%B1%E6%94%BB%E5%87%BB-Double-Spend-Attack"><span class="nav-text">双花攻击 Double Spend Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E5%88%86%E5%8F%89-Soft-fork"><span class="nav-text">软分叉 Soft-fork</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AC%E5%88%86%E5%8F%89-Hard-fork"><span class="nav-text">硬分叉 Hard-fork</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E5%BD%A2%E6%94%BB%E5%87%BB-Alien-Attack"><span class="nav-text">异形攻击 Alien Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%93%E9%B1%BC%E6%94%BB%E5%87%BB-Phishing"><span class="nav-text">钓鱼攻击 Phishing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%A8%E9%A9%AC%E6%94%BB%E5%87%BB-Trojan-Horse-Attack"><span class="nav-text">木马攻击 Trojan Horse Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%9B%E5%BA%94%E9%93%BE%E6%94%BB%E5%87%BB-Supply-Chain-Attack"><span class="nav-text">供应链攻击 Supply Chain Attack</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E5%90%88%E7%BA%A6"><span class="nav-text">智能合约</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E5%9B%9E%E6%BB%9A%E6%94%BB%E5%87%BB-Roll-Back-Attack"><span class="nav-text">交易回滚攻击 Roll Back Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E6%8E%92%E6%8C%A4%E6%94%BB%E5%87%BB-Transaction-Congestion-Attack"><span class="nav-text">交易排挤攻击 Transaction Congestion Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%95%B0%E6%94%BB%E5%87%BB-Random-Number-Attack"><span class="nav-text">随机数攻击 Random Number Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E6%94%BB%E5%87%BB-hard-fail-Attack"><span class="nav-text">状态攻击 hard_fail Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB-Replay-Attack"><span class="nav-text">重放攻击 Replay Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%85%A5%E6%94%BB%E5%87%BB-Reentrancy-Attack"><span class="nav-text">重入攻击 Reentrancy Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%87%E5%85%85%E5%80%BC%E6%94%BB%E5%87%BB-False-Top-up"><span class="nav-text">假充值攻击 False Top-up</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9F%AD%E5%9C%B0%E5%9D%80%E6%94%BB%E5%87%BB-Short-Address-Attack"><span class="nav-text">短地址攻击 Short Address Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%87%E5%B8%81%E6%94%BB%E5%87%BB-Fake-Token-Attack"><span class="nav-text">假币攻击 Fake Token Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E5%9E%8B%E6%BA%A2%E5%87%BA%E6%94%BB%E5%87%BB-Interger-Overflow-Attack"><span class="nav-text">整型溢出攻击 Interger Overflow Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E7%AB%9E%E4%BA%89%E6%94%BB%E5%87%BB-Race-Condition"><span class="nav-text">条件竞争攻击 Race Condition</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%8A%E6%9D%83%E8%AE%BF%E9%97%AE%E6%94%BB%E5%87%BB-Exceed-Authority-Access-Attack"><span class="nav-text">越权访问攻击 Exceed Authority Access Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A4%E6%98%93%E9%A1%BA%E5%BA%8F%E4%BE%9D%E8%B5%96%E6%94%BB%E5%87%BB-Transaction-Ordering-Attack"><span class="nav-text">交易顺序依赖攻击 Transaction-Ordering Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%B3%E5%B7%AB%E6%94%BB%E5%87%BB-Sybil-Attack"><span class="nav-text">女巫攻击 Sybil Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%87%E9%94%99%E8%AF%AF%E9%80%9A%E7%9F%A5%E6%94%BB%E5%87%BB-Fake-Onerror-Notification-Attack"><span class="nav-text">假错误通知攻击 Fake Onerror Notification Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B2%89%E5%B0%98%E6%94%BB%E5%87%BB-Dusting-Attack"><span class="nav-text">粉尘攻击 Dusting Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C2%E6%94%BB%E5%87%BB-C2-Attack"><span class="nav-text">C2攻击 C2 Attack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B4%97%E5%B8%81-Money-Laundering"><span class="nav-text">洗币 Money Laundering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8B%92%E7%B4%A2-Ransom"><span class="nav-text">勒索 Ransom</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+            <div class="customize-info my-1">Always say hello to the world!</div>
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2023</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-regular fa-snowman-head fa-bounce" style="color: #4d8eff;"></i>&nbsp;&nbsp;<a href="/">f4tb3e</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
