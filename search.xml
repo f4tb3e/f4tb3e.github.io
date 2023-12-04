@@ -822,7 +822,7 @@
 <li>The <a class="link"   href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md" >ERC20 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> Spec</li>
 <li>The <a class="link"   href="https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts" >OpenZeppelin <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> codebase</li>
 </ul>
-<h3 id="Analyze-2"><a href="#Analyze-2" class="headerlink" title="Analyze"></a>Analyze</h3><p>题目是一个 ERC-20 标准的代币合约，其继承于 OppenZepplin Contracts 的 ERC20 合约，其解析见 <a href="2023/12/03/%E6%B5%85%E6%9E%90ERC-20">浅析ERC-20</a>。</p>
+<h3 id="Analyze-2"><a href="#Analyze-2" class="headerlink" title="Analyze"></a>Analyze</h3><p>题目是一个 ERC-20 标准的代币合约，其继承于 OppenZepplin Contracts 的 ERC20 合约，其解析见 <a href="/2023/12/03/%E6%B5%85%E6%9E%90ERC-20">浅析ERC-20</a>。</p>
 <p>题目要求要把我们手里的余额花完，但是修改器<code>lockTokens</code>检测到<code>msg.sender</code>为玩家时会判断时间戳，要十年后才能解锁。但是当 sender 不是玩家的时候就会直接执行 transfer 了。</p>
 <p>看完 ERC-20 就知道可以把自己账户中的余额授权给另一个账户以供使用，这样就可以使 sender 不是玩家，绕过修改器。</p>
 <h3 id="Exploit-2"><a href="#Exploit-2" class="headerlink" title="Exploit"></a>Exploit</h3><p>python 攻击脚本如下：</p>
@@ -843,8 +843,6 @@
                 ></p>
 <h2 id="16-Preservation"><a href="#16-Preservation" class="headerlink" title="16 Preservation"></a>16 Preservation</h2><h3 id="Code-3"><a href="#Code-3" class="headerlink" title="Code"></a>Code</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract Preservation &#123;</span><br><span class="line">    // public library contracts</span><br><span class="line">    address public timeZone1Library;</span><br><span class="line">    address public timeZone2Library;</span><br><span class="line">    address public owner;</span><br><span class="line">    uint256 storedTime;</span><br><span class="line">    // Sets the function signature for delegatecall</span><br><span class="line">    bytes4 constant setTimeSignature = bytes4(keccak256(&quot;setTime(uint256)&quot;));</span><br><span class="line"></span><br><span class="line">    constructor(</span><br><span class="line">        address _timeZone1LibraryAddress,</span><br><span class="line">        address _timeZone2LibraryAddress</span><br><span class="line">    ) &#123;</span><br><span class="line">        timeZone1Library = _timeZone1LibraryAddress;</span><br><span class="line">        timeZone2Library = _timeZone2LibraryAddress;</span><br><span class="line">        owner = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // set the time for timezone 1</span><br><span class="line">    function setFirstTime(uint256 _timeStamp) public &#123;</span><br><span class="line">        timeZone1Library.delegatecall(</span><br><span class="line">            abi.encodePacked(setTimeSignature, _timeStamp)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // set the time for timezone 2</span><br><span class="line">    function setSecondTime(uint256 _timeStamp) public &#123;</span><br><span class="line">        timeZone2Library.delegatecall(</span><br><span class="line">            abi.encodePacked(setTimeSignature, _timeStamp)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Simple library contract to set the time</span><br><span class="line">contract LibraryContract &#123;</span><br><span class="line">    // stores a timestamp</span><br><span class="line">    uint256 storedTime;</span><br><span class="line"></span><br><span class="line">    function setTime(uint256 _time) public &#123;</span><br><span class="line">        storedTime = _time;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
 
-
-
 <h3 id="Description-3"><a href="#Description-3" class="headerlink" title="Description"></a>Description</h3><p>This contract utilizes a library to store two different times for two different timezones. The constructor creates two instances of the library for each time to be stored.</p>
 <p>The goal of this level is for you to claim ownership of the instance you are given.</p>
 <p> Things that might help</p>
@@ -854,7 +852,7 @@
 <li>Understanding how storage variables are stored and accessed.</li>
 <li>Understanding how casting works between different data types.</li>
 </ul>
-]]></content>
+<h3 id="Analyze-3"><a href="#Analyze-3" class="headerlink" title="Analyze"></a>Analyze</h3>]]></content>
       <categories>
         <category>靶场</category>
       </categories>
