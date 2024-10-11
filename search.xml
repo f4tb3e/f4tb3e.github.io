@@ -87,6 +87,81 @@
       </tags>
   </entry>
   <entry>
+    <title>Foundry 工具的使用笔记</title>
+    <url>/2023/11/07/Foundry%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<p>Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.</p>
+<p>Foundry 是一个极快、可移植和模块化的工具包，用于用 Rust 编写的以太坊应用程序开发。</p>
+<h2 id="Forge-的使用"><a href="#Forge-的使用" class="headerlink" title="Forge 的使用"></a>Forge 的使用</h2><p>Forge Standard Library (Forge Std for short) is a collection of helpful contracts that make writing tests easier, faster, and more user-friendly.</p>
+<p>Forge Standard Library（简称 Forge Std）是有用的合同集合，使编写测试更容易、更快速、更用户友好。</p>
+<h3 id="init-创建并初始化新项目"><a href="#init-创建并初始化新项目" class="headerlink" title="init 创建并初始化新项目"></a>init 创建并初始化新项目</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">$ forge init test_project</span><br></pre></td></tr></table></figure></div>
+
+<p>由默认模板创建一个新目录 test_project，并初始化一个新的 git 仓库。</p>
+<p>使用 –templates 参数可以从其他模板创建新项目。</p>
+<p>默认模板目录结构如下：</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree . -d -L 1</span><br><span class="line">.</span><br><span class="line">├── cache    // 编译用，缓存</span><br><span class="line">├── lib      // 自带Forge标准库</span><br><span class="line">├── out      // 测试后生成，包含合约工件，如ABI</span><br><span class="line">├── script   // 用于部署合约的脚本</span><br><span class="line">├── src      // 存放合约代码</span><br><span class="line">└── <span class="built_in">test</span>     // 测试合约代码</span><br><span class="line"></span><br><span class="line">6 directories</span><br></pre></td></tr></table></figure></div>
+
+<h3 id="test-测试项目"><a href="#test-测试项目" class="headerlink" title="test 测试项目"></a>test 测试项目</h3><p>测试需要项目中有待测合约，和用于执行测试的测试合约。任何具有 test 开头的函数的合约都会被认为是测试合约，一般会放在项目的 test&#x2F; 目录下，并以 <code>.t.sol</code> 结尾。</p>
+<p>待测合约：Counter.sol</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: UNLICENSED</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">contract Counter &#123;</span><br><span class="line">    uint256 public number;</span><br><span class="line"></span><br><span class="line">    function setNumber(uint256 newNumber) public &#123;</span><br><span class="line">        number = newNumber;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function increment() public &#123;</span><br><span class="line">        number++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>测试合约：Counter.t.sol</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: UNLICENSED</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">import &#123;Test, console2&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;Counter&#125; from &quot;../src/Counter.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract CounterTest is Test &#123;</span><br><span class="line">    Counter public counter;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        counter = new Counter();</span><br><span class="line">        counter.setNumber(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function test_Increment() public &#123;</span><br><span class="line">        counter.increment();</span><br><span class="line">        assertEq(counter.number(), 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testFuzz_SetNumber(uint256 x) public &#123;</span><br><span class="line">        counter.setNumber(x);</span><br><span class="line">        assertEq(counter.number(), x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>测试用法如下：</p>
+<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">$ forge <span class="built_in">test</span></span><br><span class="line">// 测试当前项目</span><br><span class="line"></span><br><span class="line">$ forge <span class="built_in">test</span> --match-contract &lt;待测合约&gt; --match-test &lt;测试合约&gt;</span><br><span class="line">// 测试筛选出的合约</span><br></pre></td></tr></table></figure></div>
+
+<p>可以看到测试函数中除了调用被测合约的函数以外，还有用于验证测试结果的 assert() 函数，示例中是 assertEq()，用于判断两个参数是否相等：</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function assertEq(int a, int b) internal &#123;</span><br><span class="line">    if (a != b) &#123;</span><br><span class="line">        emit log(&quot;Error: a == b not satisfied [int]&quot;);</span><br><span class="line">        emit log_named_int(&quot;      Left&quot;, a);</span><br><span class="line">        emit log_named_int(&quot;     Right&quot;, b);</span><br><span class="line">        fail();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<p>若是判断不符合预期，就会测试失败。</p>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Typora图片自动上传Github图床</title>
+    <url>/2022/04/28/Typora%E5%9B%BE%E7%89%87%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0GitHub%E5%9B%BE%E5%BA%8A/</url>
+    <content><![CDATA[<h2 id="0x00-序言"><a href="#0x00-序言" class="headerlink" title="0x00 序言"></a>0x00 序言</h2><p>平时比起一些花里胡哨的编辑器（如Obsidian），我还是更喜欢用Typora编辑markdown，分享一下Typora复制图片上传图床的技巧</p>
+<h2 id="0x01-Github仓库作为图床"><a href="#0x01-Github仓库作为图床" class="headerlink" title="0x01 Github仓库作为图床"></a>0x01 Github仓库作为图床</h2><p>这里需要创建一个 <code>Repositories </code>(仓库)作为图床，登录GitHub进入个人页，在左边会有添加 <code>Repositories </code>的选项，点进去进入创建仓库的界面</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280322781.png"
+                      alt="image-20220428032248413"
+                ></p>
+<p>创建的界面</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280323325.png"
+                      alt="image-20220428032349070"
+                ></p>
+<ul>
+<li><code>Repository name</code>处就填你想要的库名称，比如我的就叫 <code>TyporaPics</code></li>
+<li><code>Description</code>那里随便写个描述就可以</li>
+<li>权限那里要选择 <code>Public</code></li>
+<li>记得勾选上<code>Add a README file</code>，是为了避免一大堆麻烦</li>
+</ul>
+<p>以上完成了就可以点击创建了</p>
+<p>然后这边顺便拿一下 <code>token</code>吧，点击头向下拉栏的 <code>Settings</code>，再选择设置里的 <code>Developer settings</code>，进入 <code>Personal access tokens</code>，点击创建，底下的一大堆权限只需要勾上<code>repo</code>就可以了</p>
+<p>注意：拿到 <code>token</code>后一定要妥善保存，这是它唯一一次能被看到！</p>
+<h2 id="0x02-PicGo配置"><a href="#0x02-PicGo配置" class="headerlink" title="0x02 PicGo配置"></a>0x02 PicGo配置</h2><p>下载安装 <code>PicGo</code>，进入里面 <code>GitHub</code>图床的配置</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280339616.png"
+                      alt="image-20220428033916240"
+                ></p>
+<p>自定义域名那里的 <code>https://cdn.jsdelivr.net/gh/</code>是<code>cdn</code>的加速服务</p>
+<p>图床这里设置完毕后，进入<code>PicGo</code>设置把“时间戳重命名”和“上传后自动复制URL”这两个选项开启， <code>PicGo</code>这边就OK了</p>
+<h2 id="0x03-Typora配置"><a href="#0x03-Typora配置" class="headerlink" title="0x03 Typora配置"></a>0x03 Typora配置</h2><p>在“偏好设置”中找到“图像”，在“上传服务”处选择 <code>PicGo(app)</code>，并选好相应的路径，然后验证一下成不成功，如果想要一插入图片就自动上传的话可以在<code>“插入图片时...”</code>那里选择<code>上传图片</code>，我个人比较喜欢留一些缓冲的余地，在默认状况下，插入文件后会有按钮选项出现，点一下即可上传</p>
+]]></content>
+      <categories>
+        <category>小妙招</category>
+      </categories>
+  </entry>
+  <entry>
     <title>区块链安全基础备忘</title>
     <url>/2023/10/05/%E5%9F%BA%E7%A1%80%E5%A4%87%E5%BF%98/</url>
     <content><![CDATA[<h2 id="基础名词"><a href="#基础名词" class="headerlink" title="基础名词"></a>基础名词</h2><h3 id="钱包-Wallet"><a href="#钱包-Wallet" class="headerlink" title="钱包 Wallet"></a>钱包 Wallet</h3><p>是一个管理私钥的工具，允许通过其检查、存储、交易持有的数字货币。它是进入区块链世界的基础设施和重要入口。</p>
@@ -166,81 +241,6 @@
 ]]></content>
       <categories>
         <category>区块链</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Typora图片自动上传Github图床</title>
-    <url>/2022/04/28/Typora%E5%9B%BE%E7%89%87%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0GitHub%E5%9B%BE%E5%BA%8A/</url>
-    <content><![CDATA[<h2 id="0x00-序言"><a href="#0x00-序言" class="headerlink" title="0x00 序言"></a>0x00 序言</h2><p>平时比起一些花里胡哨的编辑器（如Obsidian），我还是更喜欢用Typora编辑markdown，分享一下Typora复制图片上传图床的技巧</p>
-<h2 id="0x01-Github仓库作为图床"><a href="#0x01-Github仓库作为图床" class="headerlink" title="0x01 Github仓库作为图床"></a>0x01 Github仓库作为图床</h2><p>这里需要创建一个 <code>Repositories </code>(仓库)作为图床，登录GitHub进入个人页，在左边会有添加 <code>Repositories </code>的选项，点进去进入创建仓库的界面</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280322781.png"
-                      alt="image-20220428032248413"
-                ></p>
-<p>创建的界面</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280323325.png"
-                      alt="image-20220428032349070"
-                ></p>
-<ul>
-<li><code>Repository name</code>处就填你想要的库名称，比如我的就叫 <code>TyporaPics</code></li>
-<li><code>Description</code>那里随便写个描述就可以</li>
-<li>权限那里要选择 <code>Public</code></li>
-<li>记得勾选上<code>Add a README file</code>，是为了避免一大堆麻烦</li>
-</ul>
-<p>以上完成了就可以点击创建了</p>
-<p>然后这边顺便拿一下 <code>token</code>吧，点击头向下拉栏的 <code>Settings</code>，再选择设置里的 <code>Developer settings</code>，进入 <code>Personal access tokens</code>，点击创建，底下的一大堆权限只需要勾上<code>repo</code>就可以了</p>
-<p>注意：拿到 <code>token</code>后一定要妥善保存，这是它唯一一次能被看到！</p>
-<h2 id="0x02-PicGo配置"><a href="#0x02-PicGo配置" class="headerlink" title="0x02 PicGo配置"></a>0x02 PicGo配置</h2><p>下载安装 <code>PicGo</code>，进入里面 <code>GitHub</code>图床的配置</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280339616.png"
-                      alt="image-20220428033916240"
-                ></p>
-<p>自定义域名那里的 <code>https://cdn.jsdelivr.net/gh/</code>是<code>cdn</code>的加速服务</p>
-<p>图床这里设置完毕后，进入<code>PicGo</code>设置把“时间戳重命名”和“上传后自动复制URL”这两个选项开启， <code>PicGo</code>这边就OK了</p>
-<h2 id="0x03-Typora配置"><a href="#0x03-Typora配置" class="headerlink" title="0x03 Typora配置"></a>0x03 Typora配置</h2><p>在“偏好设置”中找到“图像”，在“上传服务”处选择 <code>PicGo(app)</code>，并选好相应的路径，然后验证一下成不成功，如果想要一插入图片就自动上传的话可以在<code>“插入图片时...”</code>那里选择<code>上传图片</code>，我个人比较喜欢留一些缓冲的余地，在默认状况下，插入文件后会有按钮选项出现，点一下即可上传</p>
-]]></content>
-      <categories>
-        <category>小妙招</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Foundry 工具的使用笔记</title>
-    <url>/2023/11/07/Foundry%E4%BD%BF%E7%94%A8/</url>
-    <content><![CDATA[<p>Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.</p>
-<p>Foundry 是一个极快、可移植和模块化的工具包，用于用 Rust 编写的以太坊应用程序开发。</p>
-<h2 id="Forge-的使用"><a href="#Forge-的使用" class="headerlink" title="Forge 的使用"></a>Forge 的使用</h2><p>Forge Standard Library (Forge Std for short) is a collection of helpful contracts that make writing tests easier, faster, and more user-friendly.</p>
-<p>Forge Standard Library（简称 Forge Std）是有用的合同集合，使编写测试更容易、更快速、更用户友好。</p>
-<h3 id="init-创建并初始化新项目"><a href="#init-创建并初始化新项目" class="headerlink" title="init 创建并初始化新项目"></a>init 创建并初始化新项目</h3><div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">$ forge init test_project</span><br></pre></td></tr></table></figure></div>
-
-<p>由默认模板创建一个新目录 test_project，并初始化一个新的 git 仓库。</p>
-<p>使用 –templates 参数可以从其他模板创建新项目。</p>
-<p>默认模板目录结构如下：</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">$ tree . -d -L 1</span><br><span class="line">.</span><br><span class="line">├── cache    // 编译用，缓存</span><br><span class="line">├── lib      // 自带Forge标准库</span><br><span class="line">├── out      // 测试后生成，包含合约工件，如ABI</span><br><span class="line">├── script   // 用于部署合约的脚本</span><br><span class="line">├── src      // 存放合约代码</span><br><span class="line">└── <span class="built_in">test</span>     // 测试合约代码</span><br><span class="line"></span><br><span class="line">6 directories</span><br></pre></td></tr></table></figure></div>
-
-<h3 id="test-测试项目"><a href="#test-测试项目" class="headerlink" title="test 测试项目"></a>test 测试项目</h3><p>测试需要项目中有待测合约，和用于执行测试的测试合约。任何具有 test 开头的函数的合约都会被认为是测试合约，一般会放在项目的 test&#x2F; 目录下，并以 <code>.t.sol</code> 结尾。</p>
-<p>待测合约：Counter.sol</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: UNLICENSED</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">contract Counter &#123;</span><br><span class="line">    uint256 public number;</span><br><span class="line"></span><br><span class="line">    function setNumber(uint256 newNumber) public &#123;</span><br><span class="line">        number = newNumber;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function increment() public &#123;</span><br><span class="line">        number++;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>测试合约：Counter.t.sol</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">// SPDX-License-Identifier: UNLICENSED</span><br><span class="line">pragma solidity ^0.8.13;</span><br><span class="line"></span><br><span class="line">import &#123;Test, console2&#125; from &quot;forge-std/Test.sol&quot;;</span><br><span class="line">import &#123;Counter&#125; from &quot;../src/Counter.sol&quot;;</span><br><span class="line"></span><br><span class="line">contract CounterTest is Test &#123;</span><br><span class="line">    Counter public counter;</span><br><span class="line"></span><br><span class="line">    function setUp() public &#123;</span><br><span class="line">        counter = new Counter();</span><br><span class="line">        counter.setNumber(0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function test_Increment() public &#123;</span><br><span class="line">        counter.increment();</span><br><span class="line">        assertEq(counter.number(), 1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    function testFuzz_SetNumber(uint256 x) public &#123;</span><br><span class="line">        counter.setNumber(x);</span><br><span class="line">        assertEq(counter.number(), x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>测试用法如下：</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="code"><pre><span class="line">$ forge <span class="built_in">test</span></span><br><span class="line">// 测试当前项目</span><br><span class="line"></span><br><span class="line">$ forge <span class="built_in">test</span> --match-contract &lt;待测合约&gt; --match-test &lt;测试合约&gt;</span><br><span class="line">// 测试筛选出的合约</span><br></pre></td></tr></table></figure></div>
-
-<p>可以看到测试函数中除了调用被测合约的函数以外，还有用于验证测试结果的 assert() 函数，示例中是 assertEq()，用于判断两个参数是否相等：</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">function assertEq(int a, int b) internal &#123;</span><br><span class="line">    if (a != b) &#123;</span><br><span class="line">        emit log(&quot;Error: a == b not satisfied [int]&quot;);</span><br><span class="line">        emit log_named_int(&quot;      Left&quot;, a);</span><br><span class="line">        emit log_named_int(&quot;     Right&quot;, b);</span><br><span class="line">        fail();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
-
-<p>若是判断不符合预期，就会测试失败。</p>
-]]></content>
-      <categories>
-        <category>工具</category>
       </categories>
   </entry>
   <entry>
