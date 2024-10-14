@@ -100,7 +100,9 @@
     
     
     
-<meta name="generator" content="Hexo 7.0.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#abb2bf;--hl-bg:#282c34;--hltools-bg:#21252b;--hltools-color:#bbbbbc;--hlnumber-bg:#282c34;--hlnumber-color:#495162;--hlscrollbar-bg:#373c47;--hlexpand-bg:linear-gradient(180deg,rgba(40,44,52,0.1),rgba(40,44,52,0.9))}</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head>
 
 
 <body>
@@ -439,82 +441,82 @@
 <p>Foundry 是一个极快、可移植和模块化的工具包，用于用 Rust 编写的以太坊应用程序开发。</p>
 <h2 id="Forge-的使用"><a href="#Forge-的使用" class="headerlink" title="Forge 的使用"></a>Forge 的使用</h2><p>Forge Standard Library (Forge Std for short) is a collection of helpful contracts that make writing tests easier, faster, and more user-friendly.</p>
 <p>Forge Standard Library（简称 Forge Std）是有用的合同集合，使编写测试更容易、更快速、更用户友好。</p>
-<h3 id="init-创建并初始化新项目"><a href="#init-创建并初始化新项目" class="headerlink" title="init 创建并初始化新项目"></a>init 创建并初始化新项目</h3><pre><code class="bash">$ forge init test_project
-</code></pre>
+<h3 id="init-创建并初始化新项目"><a href="#init-创建并初始化新项目" class="headerlink" title="init 创建并初始化新项目"></a>init 创建并初始化新项目</h3><figure class="shiki bash"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #61AFEF">$</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">forge</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">init</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">test_project</span></span></code></pre></div></div></figure>
+
 <p>由默认模板创建一个新目录 test_project，并初始化一个新的 git 仓库。</p>
 <p>使用 –templates 参数可以从其他模板创建新项目。</p>
 <p>默认模板目录结构如下：</p>
-<pre><code class="bash">$ tree . -d -L 1
-.
-├── cache    // 编译用，缓存
-├── lib      // 自带Forge标准库
-├── out      // 测试后生成，包含合约工件，如ABI
-├── script   // 用于部署合约的脚本
-├── src      // 存放合约代码
-└── test     // 测试合约代码
+<figure class="shiki bash"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #61AFEF">$</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">tree</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">.</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">-d</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">-L</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">1</span></span>
+<span class="line"><span style="color: #56B6C2">.</span></span>
+<span class="line"><span style="color: #61AFEF">├──</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">cache</span><span style="color: #ABB2BF">    </span><span style="color: #98C379">//</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">编译用，缓存</span></span>
+<span class="line"><span style="color: #61AFEF">├──</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">lib</span><span style="color: #ABB2BF">      </span><span style="color: #98C379">//</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">自带Forge标准库</span></span>
+<span class="line"><span style="color: #61AFEF">├──</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">out</span><span style="color: #ABB2BF">      </span><span style="color: #98C379">//</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">测试后生成，包含合约工件，如ABI</span></span>
+<span class="line"><span style="color: #61AFEF">├──</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">script</span><span style="color: #ABB2BF">   </span><span style="color: #98C379">//</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">用于部署合约的脚本</span></span>
+<span class="line"><span style="color: #61AFEF">├──</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">src</span><span style="color: #ABB2BF">      </span><span style="color: #98C379">//</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">存放合约代码</span></span>
+<span class="line"><span style="color: #61AFEF">└──</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">test</span><span style="color: #ABB2BF">     </span><span style="color: #98C379">//</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">测试合约代码</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #61AFEF">6</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">directories</span></span></code></pre></div></div></figure>
 
-6 directories
-</code></pre>
 <h3 id="test-测试项目"><a href="#test-测试项目" class="headerlink" title="test 测试项目"></a>test 测试项目</h3><p>测试需要项目中有待测合约，和用于执行测试的测试合约。任何具有 test 开头的函数的合约都会被认为是测试合约，一般会放在项目的 test&#x2F; 目录下，并以 <code>.t.sol</code> 结尾。</p>
 <p>待测合约：Counter.sol</p>
-<pre><code class="solidity">// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+<figure class="shiki solidity"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #7F848E; font-style: italic">// SPDX-License-Identifier: UNLICENSED</span></span>
+<span class="line"><span style="color: #C678DD">pragma</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">solidity</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">^0.8.13</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C678DD">contract</span><span style="color: #E5C07B"> Counter</span><span style="color: #ABB2BF"> {</span></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #E5C07B">uint256</span><span style="color: #ABB2BF"> </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> number;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">setNumber</span><span style="color: #ABB2BF">(</span><span style="color: #E5C07B">uint256</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75; font-style: italic">newNumber</span><span style="color: #ABB2BF">) </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> {</span></span>
+<span class="line"><span style="color: #ABB2BF">        number </span><span style="color: #56B6C2">=</span><span style="color: #ABB2BF"> newNumber;</span></span>
+<span class="line"><span style="color: #ABB2BF">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">increment</span><span style="color: #ABB2BF">() </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> {</span></span>
+<span class="line"><span style="color: #ABB2BF">        number</span><span style="color: #56B6C2">++</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">    }</span></span>
+<span class="line"><span style="color: #ABB2BF">}</span></span></code></pre></div></div></figure>
 
-contract Counter &#123;
-    uint256 public number;
-
-    function setNumber(uint256 newNumber) public &#123;
-        number = newNumber;
-    &#125;
-
-    function increment() public &#123;
-        number++;
-    &#125;
-&#125;
-</code></pre>
 <p>测试合约：Counter.t.sol</p>
-<pre><code class="solidity">// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+<figure class="shiki solidity"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #7F848E; font-style: italic">// SPDX-License-Identifier: UNLICENSED</span></span>
+<span class="line"><span style="color: #C678DD">pragma</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">solidity</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">^0.8.13</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C678DD">import</span><span style="color: #ABB2BF"> {</span><span style="color: #E5C07B">Test</span><span style="color: #ABB2BF">, </span><span style="color: #E5C07B">console2</span><span style="color: #ABB2BF">} </span><span style="color: #C678DD">from</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">&quot;forge-std/Test.sol&quot;</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #C678DD">import</span><span style="color: #ABB2BF"> {</span><span style="color: #E5C07B">Counter</span><span style="color: #ABB2BF">} </span><span style="color: #C678DD">from</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">&quot;../src/Counter.sol&quot;</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C678DD">contract</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">CounterTest</span><span style="color: #ABB2BF"> </span><span style="color: #C678DD">is</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">Test</span><span style="color: #ABB2BF"> {</span></span>
+<span class="line"><span style="color: #ABB2BF">    Counter </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> counter;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">setUp</span><span style="color: #ABB2BF">() </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> {</span></span>
+<span class="line"><span style="color: #ABB2BF">        counter </span><span style="color: #56B6C2">=</span><span style="color: #ABB2BF"> </span><span style="color: #C678DD">new</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">Counter</span><span style="color: #ABB2BF">();</span></span>
+<span class="line"><span style="color: #ABB2BF">        counter.</span><span style="color: #61AFEF">setNumber</span><span style="color: #ABB2BF">(</span><span style="color: #D19A66">0</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"><span style="color: #ABB2BF">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">test_Increment</span><span style="color: #ABB2BF">() </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> {</span></span>
+<span class="line"><span style="color: #ABB2BF">        counter.</span><span style="color: #61AFEF">increment</span><span style="color: #ABB2BF">();</span></span>
+<span class="line"><span style="color: #ABB2BF">        </span><span style="color: #61AFEF">assertEq</span><span style="color: #ABB2BF">(counter.</span><span style="color: #61AFEF">number</span><span style="color: #ABB2BF">(), </span><span style="color: #D19A66">1</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"><span style="color: #ABB2BF">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">testFuzz_SetNumber</span><span style="color: #ABB2BF">(</span><span style="color: #E5C07B">uint256</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75; font-style: italic">x</span><span style="color: #ABB2BF">) </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> {</span></span>
+<span class="line"><span style="color: #ABB2BF">        counter.</span><span style="color: #61AFEF">setNumber</span><span style="color: #ABB2BF">(x);</span></span>
+<span class="line"><span style="color: #ABB2BF">        </span><span style="color: #61AFEF">assertEq</span><span style="color: #ABB2BF">(counter.</span><span style="color: #61AFEF">number</span><span style="color: #ABB2BF">(), x);</span></span>
+<span class="line"><span style="color: #ABB2BF">    }</span></span>
+<span class="line"><span style="color: #ABB2BF">}</span></span></code></pre></div></div></figure>
 
-import &#123;Test, console2&#125; from &quot;forge-std/Test.sol&quot;;
-import &#123;Counter&#125; from &quot;../src/Counter.sol&quot;;
-
-contract CounterTest is Test &#123;
-    Counter public counter;
-
-    function setUp() public &#123;
-        counter = new Counter();
-        counter.setNumber(0);
-    &#125;
-
-    function test_Increment() public &#123;
-        counter.increment();
-        assertEq(counter.number(), 1);
-    &#125;
-
-    function testFuzz_SetNumber(uint256 x) public &#123;
-        counter.setNumber(x);
-        assertEq(counter.number(), x);
-    &#125;
-&#125;
-</code></pre>
 <p>测试用法如下：</p>
-<pre><code class="bash">$ forge test
-// 测试当前项目
+<figure class="shiki bash"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #61AFEF">$</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">forge</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">test</span></span>
+<span class="line"><span style="color: #61AFEF">//</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">测试当前项目</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #61AFEF">$</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">forge</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">test</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">--match-contract</span><span style="color: #ABB2BF"> &lt;</span><span style="color: #98C379">待测合</span><span style="color: #ABB2BF">约&gt; </span><span style="color: #D19A66">--match-test</span><span style="color: #ABB2BF"> &lt;</span><span style="color: #98C379">测试合</span><span style="color: #ABB2BF">约&gt;</span></span>
+<span class="line"><span style="color: #61AFEF">//</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">测试筛选出的合约</span></span></code></pre></div></div></figure>
 
-$ forge test --match-contract &lt;待测合约&gt; --match-test &lt;测试合约&gt;
-// 测试筛选出的合约
-</code></pre>
 <p>可以看到测试函数中除了调用被测合约的函数以外，还有用于验证测试结果的 assert() 函数，示例中是 assertEq()，用于判断两个参数是否相等：</p>
-<pre><code class="solidity">function assertEq(int a, int b) internal &#123;
-    if (a != b) &#123;
-        emit log(&quot;Error: a == b not satisfied [int]&quot;);
-        emit log_named_int(&quot;      Left&quot;, a);
-        emit log_named_int(&quot;     Right&quot;, b);
-        fail();
-    &#125;
-&#125;
-</code></pre>
+<figure class="shiki solidity"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">assertEq</span><span style="color: #ABB2BF">(</span><span style="color: #E5C07B">int</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75; font-style: italic">a</span><span style="color: #ABB2BF">, </span><span style="color: #E5C07B">int</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75; font-style: italic">b</span><span style="color: #ABB2BF">) </span><span style="color: #C678DD">internal</span><span style="color: #ABB2BF"> {</span></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">if</span><span style="color: #ABB2BF"> (a != b) {</span></span>
+<span class="line"><span style="color: #ABB2BF">        </span><span style="color: #C678DD">emit</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">log</span><span style="color: #ABB2BF">(</span><span style="color: #98C379">&quot;Error: a == b not satisfied [int]&quot;</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"><span style="color: #ABB2BF">        </span><span style="color: #C678DD">emit</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">log_named_int</span><span style="color: #ABB2BF">(</span><span style="color: #98C379">&quot;      Left&quot;</span><span style="color: #ABB2BF">, a);</span></span>
+<span class="line"><span style="color: #ABB2BF">        </span><span style="color: #C678DD">emit</span><span style="color: #ABB2BF"> </span><span style="color: #61AFEF">log_named_int</span><span style="color: #ABB2BF">(</span><span style="color: #98C379">&quot;     Right&quot;</span><span style="color: #ABB2BF">, b);</span></span>
+<span class="line"><span style="color: #ABB2BF">        </span><span style="color: #61AFEF">fail</span><span style="color: #ABB2BF">();</span></span>
+<span class="line"><span style="color: #ABB2BF">    }</span></span>
+<span class="line"><span style="color: #ABB2BF">}</span></span></code></pre></div></div></figure>
+
 <p>若是判断不符合预期，就会测试失败。</p>
 
         </div>
@@ -909,5 +911,26 @@ $ forge test --match-contract &lt;待测合约&gt; --match-test &lt;测试合约
 </div>
 
 
-</body>
+<!-- hexo injector body_end start -->
+  <script>
+  const CODE_CONFIG = {
+    beautify: undefined,
+    highlightCopy: undefined,
+    highlightLang: undefined,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: undefined,
+    copy: {
+      success: 'undefined',
+      error: 'undefined',
+      noSupport: 'undefined',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
 </html>
