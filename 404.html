@@ -641,17 +641,19 @@
 
 
 <!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
   <script>
   const CODE_CONFIG = {
-    beautify: false,
+    beautify: true,
     highlightCopy: true,
-    highlightLang: false,
+    highlightLang: true,
     highlightHeightLimit: undefined,
     isHighlightShrink: undefined,
     copy: {
-      success: '看来我的内容帮到你了，祝你今天愉快！',
-      error: '啊哦，复制失败了~',
-      noSupport: '浏览器不支持欸',
+      success: 'undefined',
+      error: 'undefined',
+      noSupport: 'undefined',
     }
   };
   console.log(
