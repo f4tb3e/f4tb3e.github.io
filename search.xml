@@ -526,48 +526,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Typora图片自动上传Github图床</title>
-    <url>/2022/04/28/Typora%E5%9B%BE%E7%89%87%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0GitHub%E5%9B%BE%E5%BA%8A/</url>
-    <content><![CDATA[<h2 id="0x00-序言"><a href="#0x00-序言" class="headerlink" title="0x00 序言"></a>0x00 序言</h2><p>平时比起一些花里胡哨的编辑器（如Obsidian），我还是更喜欢用Typora编辑markdown，分享一下Typora复制图片上传图床的技巧</p>
-<h2 id="0x01-Github仓库作为图床"><a href="#0x01-Github仓库作为图床" class="headerlink" title="0x01 Github仓库作为图床"></a>0x01 Github仓库作为图床</h2><p>这里需要创建一个 <code>Repositories </code>(仓库)作为图床，登录GitHub进入个人页，在左边会有添加 <code>Repositories </code>的选项，点进去进入创建仓库的界面</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280322781.png"
-                      alt="image-20220428032248413"
-                ></p>
-<p>创建的界面</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280323325.png"
-                      alt="image-20220428032349070"
-                ></p>
-<ul>
-<li><code>Repository name</code>处就填你想要的库名称，比如我的就叫 <code>TyporaPics</code></li>
-<li><code>Description</code>那里随便写个描述就可以</li>
-<li>权限那里要选择 <code>Public</code></li>
-<li>记得勾选上<code>Add a README file</code>，是为了避免一大堆麻烦</li>
-</ul>
-<p>以上完成了就可以点击创建了</p>
-<p>然后这边顺便拿一下 <code>token</code>吧，点击头向下拉栏的 <code>Settings</code>，再选择设置里的 <code>Developer settings</code>，进入 <code>Personal access tokens</code>，点击创建，底下的一大堆权限只需要勾上<code>repo</code>就可以了</p>
-<p>注意：拿到 <code>token</code>后一定要妥善保存，这是它唯一一次能被看到！</p>
-<h2 id="0x02-PicGo配置"><a href="#0x02-PicGo配置" class="headerlink" title="0x02 PicGo配置"></a>0x02 PicGo配置</h2><p>下载安装 <code>PicGo</code>，进入里面 <code>GitHub</code>图床的配置</p>
-<p><img  
-                     lazyload
-                     src="/images/loading.svg"
-                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280339616.png"
-                      alt="image-20220428033916240"
-                ></p>
-<p>自定义域名那里的 <code>https://cdn.jsdelivr.net/gh/</code>是<code>cdn</code>的加速服务</p>
-<p>图床这里设置完毕后，进入<code>PicGo</code>设置把“时间戳重命名”和“上传后自动复制URL”这两个选项开启， <code>PicGo</code>这边就OK了</p>
-<h2 id="0x03-Typora配置"><a href="#0x03-Typora配置" class="headerlink" title="0x03 Typora配置"></a>0x03 Typora配置</h2><p>在“偏好设置”中找到“图像”，在“上传服务”处选择 <code>PicGo(app)</code>，并选好相应的路径，然后验证一下成不成功，如果想要一插入图片就自动上传的话可以在<code>“插入图片时...”</code>那里选择<code>上传图片</code>，我个人比较喜欢留一些缓冲的余地，在默认状况下，插入文件后会有按钮选项出现，点一下即可上传</p>
-]]></content>
-      <categories>
-        <category>小妙招</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Foundry 工具的使用笔记</title>
     <url>/2023/11/07/Foundry%E4%BD%BF%E7%94%A8/</url>
     <content><![CDATA[<p>Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.</p>
@@ -654,6 +612,48 @@
 ]]></content>
       <categories>
         <category>工具</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Typora图片自动上传Github图床</title>
+    <url>/2022/04/28/Typora%E5%9B%BE%E7%89%87%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0GitHub%E5%9B%BE%E5%BA%8A/</url>
+    <content><![CDATA[<h2 id="0x00-序言"><a href="#0x00-序言" class="headerlink" title="0x00 序言"></a>0x00 序言</h2><p>平时比起一些花里胡哨的编辑器（如Obsidian），我还是更喜欢用Typora编辑markdown，分享一下Typora复制图片上传图床的技巧</p>
+<h2 id="0x01-Github仓库作为图床"><a href="#0x01-Github仓库作为图床" class="headerlink" title="0x01 Github仓库作为图床"></a>0x01 Github仓库作为图床</h2><p>这里需要创建一个 <code>Repositories </code>(仓库)作为图床，登录GitHub进入个人页，在左边会有添加 <code>Repositories </code>的选项，点进去进入创建仓库的界面</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280322781.png"
+                      alt="image-20220428032248413"
+                ></p>
+<p>创建的界面</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280323325.png"
+                      alt="image-20220428032349070"
+                ></p>
+<ul>
+<li><code>Repository name</code>处就填你想要的库名称，比如我的就叫 <code>TyporaPics</code></li>
+<li><code>Description</code>那里随便写个描述就可以</li>
+<li>权限那里要选择 <code>Public</code></li>
+<li>记得勾选上<code>Add a README file</code>，是为了避免一大堆麻烦</li>
+</ul>
+<p>以上完成了就可以点击创建了</p>
+<p>然后这边顺便拿一下 <code>token</code>吧，点击头向下拉栏的 <code>Settings</code>，再选择设置里的 <code>Developer settings</code>，进入 <code>Personal access tokens</code>，点击创建，底下的一大堆权限只需要勾上<code>repo</code>就可以了</p>
+<p>注意：拿到 <code>token</code>后一定要妥善保存，这是它唯一一次能被看到！</p>
+<h2 id="0x02-PicGo配置"><a href="#0x02-PicGo配置" class="headerlink" title="0x02 PicGo配置"></a>0x02 PicGo配置</h2><p>下载安装 <code>PicGo</code>，进入里面 <code>GitHub</code>图床的配置</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://cdn.jsdelivr.net/gh/F4tBe3/TyporaPics/img/202204280339616.png"
+                      alt="image-20220428033916240"
+                ></p>
+<p>自定义域名那里的 <code>https://cdn.jsdelivr.net/gh/</code>是<code>cdn</code>的加速服务</p>
+<p>图床这里设置完毕后，进入<code>PicGo</code>设置把“时间戳重命名”和“上传后自动复制URL”这两个选项开启， <code>PicGo</code>这边就OK了</p>
+<h2 id="0x03-Typora配置"><a href="#0x03-Typora配置" class="headerlink" title="0x03 Typora配置"></a>0x03 Typora配置</h2><p>在“偏好设置”中找到“图像”，在“上传服务”处选择 <code>PicGo(app)</code>，并选好相应的路径，然后验证一下成不成功，如果想要一插入图片就自动上传的话可以在<code>“插入图片时...”</code>那里选择<code>上传图片</code>，我个人比较喜欢留一些缓冲的余地，在默认状况下，插入文件后会有按钮选项出现，点一下即可上传</p>
+]]></content>
+      <categories>
+        <category>小妙招</category>
       </categories>
   </entry>
   <entry>
